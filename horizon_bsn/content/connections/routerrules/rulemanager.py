@@ -63,6 +63,10 @@ def popup_messages(request, old_ruleset, new_ruleset):
         add_msg = _('Added router policies: %s') % added_rules
         LOG.debug(add_msg)
         messages.success(request, add_msg)
+    if not deleted_rules and not added_rules:
+        no_op_msg = _('No change in policies, superset policy exists.')
+        LOG.debug(no_op_msg)
+        messages.warning(request, no_op_msg)
 
 
 def routerrule_list(request, **params):
