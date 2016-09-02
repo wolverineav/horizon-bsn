@@ -1,0 +1,38 @@
+<div ng-controller="bsn.bsndashboard.networktemplate.DrawerController as drawerCtrl">
+
+  <div class="row">
+    <dl class="col-md-2">
+      <dt translate>Last Run</dt>
+      <dd>{$ item.test_time $}</dd>
+    </dl>
+
+    <dl class="col-md-2">
+      <dt translate>Status</dt>
+      <dd>{$ item.test_result $}</dd>
+    </dl>
+
+    <dl class="col-md-6">
+      <dt translate>Command Line Output</dt>
+      <div class="command-prompt-background">
+        <dd class="command-prompt-text">Hop-Index: {$ item.detail[0]['hop-index'] $}</dd>
+        <dd class="command-prompt-text">Hop-Name: {$ item.detail[0]['hop-name'] $}</dd>
+        <dd class="command-prompt-text">Path-Index: {$ item.detail[0]['path-index'] $}</dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<style>
+.command-prompt-background {
+  background-color: black;
+  border: 2px solid gray;
+  border-radius: 5px;
+  margin: 5px 5px 5px 5px;
+}
+.command-prompt-text {
+  color: white;
+  margin: 10px 10px 10px 10px;
+  font-family: FreeMono, monospace;
+  font-size: 12px;
+}
+</style>

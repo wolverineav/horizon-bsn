@@ -11,17 +11,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# THIS FILE IS MANAGED BY THE GLOBAL REQUIREMENTS REPO - DO NOT EDIT
-import setuptools
+# The name of the panel to be added to HORIZON_CONFIG. Required.
+PANEL = 'reachabilitytests'
 
-# In python < 2.7.4, a lazy loading of package `pbr` will break
-# setuptools if some other modules registered functions in `atexit`.
-# solution from: http://bugs.python.org/issue15881#msg170215
-try:
-    import multiprocessing  # noqa
-except ImportError:
-    pass
+# The name of the dashboard the PANEL associated with. Required.
+PANEL_DASHBOARD = 'bsndashboard'
 
-setuptools.setup(
-    setup_requires=['pbr'],
-    pbr=True)
+DISABLED = False
+
+# Python panel class of the PANEL to be added.
+ADD_PANEL = \
+    'horizon_bsn.bsndashboard.reachabilitytests.panel.Reachabilitytests'
+
+PANEL_GROUP = 'bsnextensions'
+
+# Automatically discover static resources in installed apps
+AUTO_DISCOVER_STATIC_FILES = True

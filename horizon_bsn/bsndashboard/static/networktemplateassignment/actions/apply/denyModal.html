@@ -1,0 +1,23 @@
+<div ng-form="denyModal">
+
+  <!-- Modal Header -->
+  <div class="modal-header ui-draggable-handle">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times"></span>
+    </button>
+    <div class="h3 modal-title" translate>Cannot Apply Network Template</div>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <p>A network template assignment already exists.</p>
+  </div>
+
+  <!-- OK -->
+  <div class="modal-footer">
+    <button class="btn btn-primary"
+            ng-click="$dismiss()">
+      <translate>Ok</translate>
+    </button>
+  </div>
+</div>

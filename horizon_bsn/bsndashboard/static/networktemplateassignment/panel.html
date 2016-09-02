@@ -1,0 +1,9 @@
+<!--The table this panel uses is a modified variant of the hz-resource-table that is used in other panels. This is because -->
+<!--the table behavior we require is not something easily implemented in the framework. To apply a network template, calls-->
+<!--to Heat must be called. These calls return promises that resolve immediately, but do not signify the completion of the -->
+<!--operation (these operations take longer) Instead, we must continually query Heat to check on the status of the call.-->
+<!--Then, when the operation is complete, we continue the next steps. This is only easily done by modifying the-->
+<!--controller of the table.-->
+<hz-resource-panel resource-type-name="BSN::Neutron::NetworkTemplateAssignment">
+  <extended-hz-resource-table resource-type-name="BSN::Neutron::NetworkTemplateAssignment" track-by="trackBy"></extended-hz-resource-table>
+</hz-resource-panel>

@@ -1,0 +1,74 @@
+<div ng-form="resultForm">
+
+  <!-- Modal Header -->
+  <div class="modal-header ui-draggable-handle">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times"></span>
+    </button>
+    <div class="h3 modal-title" translate>Quick Test Result</div>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3>Info</h3>
+        <label>Connection Source</label>
+        <p>Source Tenant: {$ ctrl.quickResult.src_tenant_name $}</p>
+        <p>Source Segment: {$ ctrl.quickResult.src_segment_name $}</p>
+        <p>Source IP: {$ ctrl.quickResult.src_ip $}</p>
+        <label>Connection Destination</label>
+        <p>Destination IP: {$ ctrl.quickResult.dst_ip $}</p>
+
+
+      </div>
+
+      <div class="col-sm-6">
+        <h3>Results</h3>
+        <label>Time Stamp</label>
+        <p>{$ ctrl.quickResult.test_time $}</p>
+        <label>Expected Result</label>
+        <p>{$ ctrl.quickResult.expected_result $}</p>
+        <label>Test Results</label>
+        <p>{$ ctrl.quickResult.test_result $}</p>
+        <label>Command Line Output</label>
+        <div class="command-prompt-background">
+          <p class="command-prompt-text">Hop-Index: {$ ctrl.quickResult.detail[0]['hop-index'] $}</p>
+          <p class="command-prompt-text">Hop-Name: {$ ctrl.quickResult.detail[0]['hop-name'] $}</p>
+          <p class="command-prompt-text">Path-Index: {$ ctrl.quickResult.detail[0]['path-index'] $}</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- create -->
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="$dismiss()">
+      <span class="fa fa-close"></span>
+      <translate>Cancel</translate>
+    </button>
+    <button class="btn btn-primary"
+            ng-click="$close(ctrl.model)"
+            ng-disabled="resultForm.$invalid">
+      <span class="fa fa-plus"></span>
+      <translate>Save</translate>
+    </button>
+  </div>
+
+</div>
+
+<style>
+.command-prompt-background {
+  background-color: black;
+  border: 2px solid gray;
+  border-radius: 5px;
+  margin: 5px 5px 5px 5px;
+}
+.command-prompt-text {
+  color: white;
+  margin: 10px 10px 10px 10px;
+  font-family: FreeMono, monospace;
+  font-size: 12px;
+}
+</style>

@@ -1,0 +1,119 @@
+<div ng-form="createForm">
+
+  <!-- Modal Header -->
+  <div class="modal-header ui-draggable-handle">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times"></span>
+    </button>
+    <div class="h3 modal-title" translate>Add Router Policy</div>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <fieldset>
+
+          <!-- Source CIDR -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.source.$invalid && createForm.source.$dirty}">
+            <label class="control-label required" translate>Source CIDR</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+              <input class="form-control" id="source" ng-model="ctrl.model.source" maxlength="64"
+                     name="source" type="text" ng-required="true"
+                     placeholder="{$ 'Required' | translate $}"
+                     pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$">
+            </div>
+            <span class="help-block" ng-show="createForm.src_ip.$error.pattern" translate>
+              <!-- Insert error message for input that doesn't match the regex pattern -->
+            </span>
+          </div>
+
+          <!-- Dest CIDR -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.destination.$invalid && createForm.destination.$dirty}">
+            <label class="control-label required" translate>Destination CIDR</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+              <input class="form-control" id="destination" ng-model="ctrl.model.destination" maxlength="64"
+                     name="destination" type="text" ng-required="true"
+                     placeholder="{$ 'Required' | translate $}"
+                     pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$">
+            </div>
+            <span class="help-block" ng-show="createForm.src_ip.$error.pattern" translate>
+              <!-- Insert error message for input that doesn't match the regex pattern -->
+            </span>
+          </div>
+
+          <!-- Action -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.action.$invalid && createForm.action.$dirty}">
+            <label class="control-label required" for="action" translate>Expected Connection Result</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <select class="form-control" id="action" ng-model="ctrl.model.action"
+                     name="action" type="text" ng-required="true" pattern="[^/]+">
+                <option value="" disabled selected>--- Select Action ---</option>
+                <option value="permit">Permit</option>
+                <option value="deny">Deny</option>
+              </select>
+          </div>
+
+          <!-- Next Hops -->
+          <div class="form-group">
+            <label class="control-label" translate>Optional: Next Hops (comma delimited)</label>
+            <div>
+              <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+              <input class="form-control" id="nexthops" ng-model="ctrl.model.nexthops" maxlength="64"
+                     name="nexthops" type="text"
+                     placeholder="{$ 'Optional' | translate $}">
+            </div>
+          </div>
+
+          <!-- Router Name -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.router_name.$invalid && createForm.router_name.$dirty}">
+            <label class="control-label required" translate>Router Name</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+              <input class="form-control" id="router_name" ng-model="ctrl.router.name" maxlength="64"
+                     name="router_name" type="text" ng-required="true" disabled>
+            </div>
+            <span class="help-block" ng-show="createForm.src_ip.$error.pattern" translate>
+              <!-- Insert error message for input that doesn't match the regex pattern -->
+            </span>
+          </div>
+
+        </fieldset>
+      </div>
+
+      <div class="col-sm-6">
+        <h3>Description:</h3>
+        <p translate>
+          Routing policies to apply to router. Policies are matched by most specific source first and then by most specific destination.
+          The next hop addresses can be used to override the router used by the client.
+          Next hop addresses are ignored for Deny action policies.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- create -->
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="$dismiss()">
+      <span class="fa fa-close"></span>
+      <translate>Cancel</translate>
+    </button>
+    <button class="btn btn-primary"
+            ng-click="$close(ctrl.model)"
+            ng-disabled="createForm.$invalid">
+      <span class="fa fa-plus"></span>
+      <translate>Create</translate>
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,53 @@
+<div ng-form="saveForm">
+
+  <!-- Modal Header -->
+  <div class="modal-header ui-draggable-handle">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times"></span>
+    </button>
+    <div class="h3 modal-title" translate>Save Test</div>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-6">
+
+        <!-- Name -->
+        <div class="form-group required"
+             ng-class="{'has-error': saveForm.name.$invalid && saveForm.name.$dirty}">
+          <label class="control-label required" for="name" translate>Name</label>
+          <span class="hz-icon-required fa fa-asterisk"></span>
+          <div>
+            <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+            <input class="form-control" id="name" ng-model="ctrl.name" maxlength="64"
+                   name="name" type="text" ng-required="true" pattern=""
+                   placeholder="{$ 'Required' | translate $}">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-sm-6">
+        <h3 translate>Description</h3>
+        <p translate>From here you can save a quick test into a reachability test to use for testing later.</p>
+        <p translate>Hit save to save into the reachability tests table or cancel to go the table without saving.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- create -->
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="$dismiss()">
+      <span class="fa fa-close"></span>
+      <translate>Cancel</translate>
+    </button>
+    <button class="btn btn-primary"
+            ng-click="$close(ctrl.name)"
+            ng-disabled="saveForm.$invalid">
+      <span class="fa fa-plus"></span>
+      <translate>Save</translate>
+    </button>
+  </div>
+
+</div>
