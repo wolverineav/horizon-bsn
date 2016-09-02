@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        20153.37.0
+Version:        20153.37.1
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,17 +72,15 @@ done
 %postun
 
 %changelog
+* Fri Sep 2 2016 Aditya Vaja <wolverine.av@gmail.com> - 20153.37.1
+- remove offending history from changelog
 * Fri Sep 2 2016 Aditya Vaja <wolverine.av@gmail.com> - 20153.37.0
 - tag branch for bcf 3.7 release
-* Fri Sep 2 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.22
+- merge master branch to stable/liberty, changes listed below
 - move angular enabled files to future_enabled
-* Mon Aug 29 2016 Michael Xiong <mmxiong@ucla.edu> - 0.0.21
 - BVS-6759: move horizon dashboard to use the new AngularJS framework
-* Thu Jun 23 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.20
 - BVS-6497: present a warning when policy change doesn't affect existing policy set
-* Fri Jun 10 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.19
 - BVS-6323 limit testpath visiblity to tenants
-* Tue May 24 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.18
 - ensure quick testpath names are unique
 * Thu Jun 23 2016 Aditya Vaja <wolverine.av@gmail.com> - 20153.36.1
 - BVS-6497: present a warning when policy change doesn't affect existing policy set
