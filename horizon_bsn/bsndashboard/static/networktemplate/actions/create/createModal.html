@@ -1,0 +1,72 @@
+<div ng-form="createForm">
+
+  <!-- Modal Header -->
+  <div class="modal-header ui-draggable-handle">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times"></span>
+    </button>
+    <div class="h3 modal-title" translate>Create Network Template</div>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <fieldset>
+
+          <!-- Name -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.name.$invalid && createForm.name.$dirty}">
+            <label class="control-label required" translate>Name</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+              <input class="form-control" id="template_name" ng-model="ctrl.model.name" maxlength="64"
+                     name="template_name" type="text" ng-required="true"
+                     placeholder="{$ 'Required' | translate $}">
+            </div>
+            <span class="help-block" ng-show="createForm.src_ip.$error.pattern" translate>
+              <!-- Insert error message for input that doesn't match the regex pattern -->
+            </span>
+          </div>
+
+          <!-- Body -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.body.$invalid && createForm.body.$dirty}">
+            <label class="control-label required" for="body" translate>Body</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <textarea class="form-control" id="body" ng-model="ctrl.model.body"
+                     name="body" rows="20" ng-required="true"
+                     placeholder="{$ 'Required' | translate $}"></textarea>
+            </div>
+          </div>
+
+        </fieldset>
+      </div>
+
+      <div class="col-sm-6">
+        <h3>Description:</h3>
+        <p translate>
+          Network template that will be deployed using Heat.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- create -->
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="$dismiss()">
+      <span class="fa fa-close"></span>
+      <translate>Cancel</translate>
+    </button>
+    <button class="btn btn-primary"
+            ng-click="$close(ctrl.model)"
+            ng-disabled="createForm.$invalid">
+      <span class="fa fa-plus"></span>
+      <translate>Create</translate>
+    </button>
+  </div>
+
+</div>

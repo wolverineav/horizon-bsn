@@ -1,0 +1,60 @@
+<div ng-form="applyForm">
+
+  <!-- Modal Header -->
+  <div class="modal-header ui-draggable-handle">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times"></span>
+    </button>
+    <div class="h3 modal-title" translate>Apply Network Template</div>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <fieldset>
+
+          <!-- Field -->
+          <div class="form-group required" ng-repeat="(key, value) in ctrl.params">
+               <!--ng-class="{'has-error': applyForm.name.$invalid && applyForm.name.$dirty}">-->
+            <label class="control-label required" translate>{$ value.Label $}</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+              <input class="form-control" id="field" ng-model="ctrl.model[key]" maxlength="64"
+                     name="field" type="text" ng-required="true"
+                     placeholder="{$ 'Required' | translate $}">
+            </div>
+            <!--<span class="help-block" ng-show="applyForm.src_ip.$error.pattern" translate>-->
+              <!--&lt;!&ndash; Insert error message for input that doesn't match the regex pattern &ndash;&gt;-->
+            <!--</span>-->
+          </div>
+
+
+        </fieldset>
+      </div>
+
+      <div class="col-sm-6">
+        <h3>Description:</h3>
+        <p translate>
+          Network Templates are used to configure your network based on predefined templates.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- create -->
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="$dismiss()">
+      <span class="fa fa-close"></span>
+      <translate>Cancel</translate>
+    </button>
+    <button class="btn btn-primary"
+            ng-click="$close(ctrl.model)">
+            <!--ng-disabled="applyForm.$invalid">-->
+      <span class="fa fa-plus"></span>
+      <translate>Apply</translate>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<div ng-form="createForm">
+
+  <!-- Modal Header -->
+  <div class="modal-header ui-draggable-handle">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times"></span>
+    </button>
+    <div class="h3 modal-title" translate>Create Reachability Test</div>
+  </div>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <fieldset>
+
+          <!-- Name -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.test_name.$invalid && createForm.test_name.$dirty}">
+            <label class="control-label required" for="test_name" translate>Name</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <!-- In the below tag, we can fill in pattern with regex for name format validation. -->
+              <input class="form-control" id="test_name" ng-model="ctrl.model.name" maxlength="64"
+                     name="test_name" type="text" ng-required="true" pattern=""
+                     placeholder="{$ 'Required' | translate $}">
+            </div>
+            <span class="help-block" ng-show="createForm.src_ip.$error.pattern" translate>
+              <!-- Insert error message for input that doesn't match the regex pattern -->
+            </span>
+          </div>
+
+          <!-- Source Tenant -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.name.$invalid && createForm.name.$dirty}">
+            <label class="control-label required" for="src_tenant" translate>Source Tenant</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <select class="form-control" id="src_tenant" ng-model="ctrl.model.src_tenant_name"
+                      name="src_tenant" type="text" ng-required="true">
+                <option value="" disabled selected>--- Select a Tenant ---</option>
+                <option>{$ ctrl.user.project_name $}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Source Segment -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.name.$invalid && createForm.name.$dirty}">
+            <label class="control-label required" for="src_segment" translate>Source Segment</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <select class="form-control" id="src_segment" ng-model="ctrl.model.src_segment_name"
+                     name="src_segment" type="text" ng-required="true">
+                <option value="" disabled selected>--- Select a Segment ---</option>
+                <option ng-repeat="network in ctrl.networks.items">{$network.name$}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Source IP -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.src_ip.$invalid && createForm.src_ip.$dirty}">
+            <label class="control-label required" for="src_ip" translate>Source IP Address</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <input class="form-control" id="src_ip" ng-model="ctrl.model.src_ip" maxlength="255"
+                     name="src_ip" type="text" ng-required="true"
+                     pattern="^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$"
+                     placeholder="{$ '0.0.0.0' | translate $}">
+            </div>
+            <span class="help-block" ng-show="createForm.src_ip.$error.pattern" translate>
+              Must be IP format.
+            </span>
+          </div>
+
+          <!-- Dest IP -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.dst_ip.$invalid && createForm.dst_ip.$dirty}">
+            <label class="control-label required" for="dst_ip" translate>Destination IP Address</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <div>
+              <input class="form-control" id="dst_ip" ng-model="ctrl.model.dst_ip" maxlength="255"
+                     name="dst_ip" type="text" ng-required="true"
+                     pattern="^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$"
+                     placeholder="{$ '0.0.0.0' | translate $}">
+            </div>
+            <span class="help-block" ng-show="createForm.dst_ip.$error.pattern" translate>
+              Must be IP format.
+            </span>
+          </div>
+
+          <!-- Expected Result -->
+          <div class="form-group required"
+               ng-class="{'has-error': createForm.expected_result.$invalid && createForm.expected_result.$dirty}">
+            <label class="control-label required" for="expected_result" translate>Expected Connection Result</label>
+            <span class="hz-icon-required fa fa-asterisk"></span>
+            <select class="form-control" id="expected_result" ng-model="ctrl.model.expected_result"
+                     name="expected_result" type="text" ng-required="true" pattern="[^/]+">
+                <option value="" disabled selected>--- Select Result ---</option>
+                <option>dropped by route</option>
+                <option>dropped by policy</option>
+                <option>not permitted by security groups</option>
+                <option>dropped due to private segment</option>
+                <option>dropped due to loop</option>
+                <option>packet in</option>
+                <option>forwarded</option>
+                <option>dropped</option>
+                <option>unspecified source</option>
+                <option>unsupported</option>
+                <option>invalid input</option>
+                <option>inconsistent status</option>
+                <option>no traffic detected</option>
+              </select>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col-sm-6">
+        <h3>Description:</h3>
+        <p translate>
+          Reachability test are automated test to check for connectivity between two points in a network.
+        </p>
+        <p>
+          The test can be between VMs, end point groups, tenants or connections to outside IP address.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- create -->
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="$dismiss()">
+      <span class="fa fa-close"></span>
+      <translate>Cancel</translate>
+    </button>
+    <button class="btn btn-primary"
+            ng-click="$close(ctrl.model)"
+            ng-disabled="createForm.$invalid">
+      <span class="fa fa-plus"></span>
+      <translate>Create</translate>
+    </button>
+  </div>
+
+</div>
