@@ -127,7 +127,7 @@ class RulesGridTab(tabs.Tab):
         src_rulename = src_sub['subnetid'] if src == '0.0.0.0/0' else src
         dst_rulename = dst_sub['subnetid'] if dst == '0.0.0.0/0' else dst
         if str(src) == str(dst):
-            connectivity['reachable'] = 'full'
+            connectivity['reachable'] = 'same'
             return connectivity
         matchingrules = []
 
