@@ -110,8 +110,8 @@ class RulesGridTab(tabs.Tab):
             row = {'source': dict(source),
                    'targets': []}
             for target in subnets:
-                target.update( self._get_subnet_connectivity(source, target,
-                                                             rules))
+                target.update(self._get_subnet_connectivity(source, target,
+                                                            rules))
                 row['targets'].append(dict(target))
             matrix.append(row)
         return matrix
@@ -189,8 +189,7 @@ class RulesGridTab(tabs.Tab):
         connectivity['reachable'] = 'none'
         for match in sortedrules:
             if (match['bitsinsrc'] > src.prefixlen or
-                match['bitsindst'] > dst.prefixlen):
-
+                        match['bitsindst'] > dst.prefixlen):
                 connectivity['reachable'] = 'partial'
                 if 'conflicting_rules' not in connectivity:
                     connectivity['conflicting_rules'] = []
