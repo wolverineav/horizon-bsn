@@ -184,8 +184,8 @@ class RulesGridTab(tabs.Tab):
                              key=lambda k: k['priority'])
 
         # for conflicting rules, display all of them
+        connectivity['reachable'] = 'none'
         for match in sortedrules:
-            connectivity['reachable'] = None
             if (match['bitsinsrc'] > src.prefixlen or
                 match['bitsindst'] > dst.prefixlen):
 
@@ -193,8 +193,8 @@ class RulesGridTab(tabs.Tab):
                 if 'conflicting_rules' not in connectivity:
                     connectivity['conflicting_rules'] = []
                 connectivity['conflicting_rules'].append(match['rule'])
-            if connectivity['reachable'] == 'partial':
-                return connectivity
+        if connectivity['reachable'] == 'partial':
+            return connectivity
 
         match = sortedrules[0]
 
