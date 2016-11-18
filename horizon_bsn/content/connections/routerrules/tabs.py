@@ -110,8 +110,8 @@ class RulesGridTab(tabs.Tab):
             row = {'source': dict(source),
                    'targets': []}
             for target in subnets:
-                target.update(self._get_subnet_connectivity(
-                              source, target, rules))
+                target.update( self._get_subnet_connectivity(source, target,
+                                                             rules))
                 row['targets'].append(dict(target))
             matrix.append(row)
         return matrix
@@ -126,9 +126,11 @@ class RulesGridTab(tabs.Tab):
         # differentiate between external and any
         src_rulename = src_sub['subnetid'] if src == '0.0.0.0/0' else src
         dst_rulename = dst_sub['subnetid'] if dst == '0.0.0.0/0' else dst
-        if str(src) == str(dst):
+        # special case for any<>any rule, allow clicking
+        if str(src) == str(dst) and src_rulename != 'any':
             connectivity['reachable'] = 'same'
             return connectivity
+
         matchingrules = []
 
         sortedrules = sorted(rules,

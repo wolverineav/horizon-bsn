@@ -102,6 +102,9 @@ def remove_rules(request, priority, **kwargs):
         for oldrule in currentrules:
             if oldrule['priority'] != int(priority):
                 newrules.append(oldrule)
+    if not newrules:
+        LOG.error(_("Removal of last remaining rule is not permitted."))
+        return
     body = {'router_rules': format_for_api(newrules)}
     new = api.router_update(request, router_id, **body)
     if 'router' in request.META:
