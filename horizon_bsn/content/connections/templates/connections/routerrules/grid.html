@@ -123,6 +123,7 @@
                            <b>{% trans "Source:" %}</b> {{ dest.conflicting_rule.source }}<br>
                            <b>{% trans "Destination:" %}</b> {{ dest.conflicting_rule.destination }}<br>
                            <b>{% trans "Action:" %}</b> {{ dest.conflicting_rule.action }}<br>
+                           <b>{% trans "Nexthops:" %}</b> {{ dest.conflicting_rule.nexthops }}<br>
                        </div>
                        <div class="modal-footer">
                            <a href="{% url 'horizon:project:connections:index' %}" class="btn" data-dismiss="modal">
