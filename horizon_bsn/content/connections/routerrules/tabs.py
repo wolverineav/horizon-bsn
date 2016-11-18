@@ -110,8 +110,8 @@ class RulesGridTab(tabs.Tab):
             row = {'source': dict(source),
                    'targets': []}
             for target in subnets:
-                target.update(self._get_subnet_connectivity(
-                              source, target, rules))
+                target.update(self._get_subnet_connectivity(source, target,
+                                                            rules))
                 row['targets'].append(dict(target))
             matrix.append(row)
         return matrix
@@ -126,9 +126,11 @@ class RulesGridTab(tabs.Tab):
         # differentiate between external and any
         src_rulename = src_sub['subnetid'] if src == '0.0.0.0/0' else src
         dst_rulename = dst_sub['subnetid'] if dst == '0.0.0.0/0' else dst
-        if str(src) == str(dst):
-            connectivity['reachable'] = 'full'
+        # special case for any<>any rule, allow clicking
+        if str(src) == str(dst) and src_rulename != 'any':
+            connectivity['reachable'] = 'same'
             return connectivity
+
         matchingrules = []
 
         sortedrules = sorted(rules,
@@ -182,12 +184,20 @@ class RulesGridTab(tabs.Tab):
 
         sortedrules = sorted(matchingrules,
                              key=lambda k: k['priority'])
-        match = sortedrules[0]
-        if (match['bitsinsrc'] > src.prefixlen or
-                match['bitsindst'] > dst.prefixlen):
-            connectivity['reachable'] = 'partial'
-            connectivity['conflicting_rule'] = match['rule']
+
+        # for conflicting rules, display all of them
+        connectivity['reachable'] = 'none'
+        for match in sortedrules:
+            if (match['bitsinsrc'] > src.prefixlen or
+                    match['bitsindst'] > dst.prefixlen):
+                connectivity['reachable'] = 'partial'
+                if 'conflicting_rules' not in connectivity:
+                    connectivity['conflicting_rules'] = []
+                connectivity['conflicting_rules'].append(match['rule'])
+        if connectivity['reachable'] == 'partial':
             return connectivity
+
+        match = sortedrules[0]
 
         if (match['rule']['source'] == src_rulename and
                 match['rule']['destination'] == dst_rulename):

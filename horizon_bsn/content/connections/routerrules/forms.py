@@ -92,8 +92,9 @@ class AddRouterRule(forms.SelfHandlingForm):
                 rulemanager.remove_rules(request,
                                          request.POST['rule_to_delete'],
                                          router_id=data['router_id'])
-        except Exception:
-            exceptions.handle(request, _('Unable to delete router policy.'))
+        except Exception as e:
+            exceptions.handle(request,
+                              _('Unable to delete router policy. %s') % str(e))
         try:
             rule = {'priority': data['priority'],
                     'action': data['action'],

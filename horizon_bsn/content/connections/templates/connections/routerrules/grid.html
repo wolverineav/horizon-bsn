@@ -84,6 +84,17 @@
               <i class="fa fa-check"></i>
               {% if not dest.cidr == row.source.cidr %}
                    <button type="submit" class="btn btn-default btn-xs" href="#"><i class="fa fa-random"></i></button>
+              {% elif dest.cidr == row.source.cidr and dest.cidr == '0.0.0.0/0' %}
+                   <button type="submit" class="btn btn-default btn-xs" href="#"><i class="fa fa-random"></i></button>
+              {% else %}
+                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {% endif %}
+           </div>
+           {% elif dest.reachable == 'same' %}
+           <div class="center-block">
+              <i class="fa fa-minus"></i>
+              {% if not dest.cidr == row.source.cidr %}
+                   <button type="submit" class="btn btn-default btn-xs" href="#"><i class="fa fa-random"></i></button>
               {% else %}
                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {% endif %}
@@ -109,11 +120,15 @@
                                source/destination combination.{% endblocktrans %}
                            </p>
                            <hr>
-                           <h4>{% trans "Conflicting Policy" %}</h4>
-                           <b>{% trans "Priority:" %}</b> {{ dest.conflicting_rule.priority }}<br>
-                           <b>{% trans "Source:" %}</b> {{ dest.conflicting_rule.source }}<br>
-                           <b>{% trans "Destination:" %}</b> {{ dest.conflicting_rule.destination }}<br>
-                           <b>{% trans "Action:" %}</b> {{ dest.conflicting_rule.action }}<br>
+                           <h4>{% trans "Conflicting Policies" %}</h4>
+                           {% for rule in dest.conflicting_rules %}
+                               <b>{% trans "Priority:" %}</b> {{ rule.priority }}<br>
+                               <b>{% trans "Source:" %}</b> {{ rule.source }}<br>
+                               <b>{% trans "Destination:" %}</b> {{ rule.destination }}<br>
+                               <b>{% trans "Action:" %}</b> {{ rule.action }}<br>
+                               <b>{% trans "Nexthops:" %}</b> {{ rule.nexthops }}<br>
+                               <br/>
+                           {% endfor %}
                        </div>
                        <div class="modal-footer">
                            <a href="{% url 'horizon:project:connections:index' %}" class="btn" data-dismiss="modal">
