@@ -182,12 +182,21 @@ class RulesGridTab(tabs.Tab):
 
         sortedrules = sorted(matchingrules,
                              key=lambda k: k['priority'])
-        match = sortedrules[0]
-        if (match['bitsinsrc'] > src.prefixlen or
+
+        # for conflicting rules, display all of them
+        for match in sortedrules:
+            connectivity['reachable'] = None
+            if (match['bitsinsrc'] > src.prefixlen or
                 match['bitsindst'] > dst.prefixlen):
-            connectivity['reachable'] = 'partial'
-            connectivity['conflicting_rule'] = match['rule']
-            return connectivity
+
+                connectivity['reachable'] = 'partial'
+                if 'conflicting_rules' not in connectivity:
+                    connectivity['conflicting_rules'] = []
+                connectivity['conflicting_rules'].append(match['rule'])
+            if connectivity['reachable'] == 'partial':
+                return connectivity
+
+        match = sortedrules[0]
 
         if (match['rule']['source'] == src_rulename and
                 match['rule']['destination'] == dst_rulename):

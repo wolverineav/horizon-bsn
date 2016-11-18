@@ -118,12 +118,15 @@
                                source/destination combination.{% endblocktrans %}
                            </p>
                            <hr>
-                           <h4>{% trans "Conflicting Policy" %}</h4>
-                           <b>{% trans "Priority:" %}</b> {{ dest.conflicting_rule.priority }}<br>
-                           <b>{% trans "Source:" %}</b> {{ dest.conflicting_rule.source }}<br>
-                           <b>{% trans "Destination:" %}</b> {{ dest.conflicting_rule.destination }}<br>
-                           <b>{% trans "Action:" %}</b> {{ dest.conflicting_rule.action }}<br>
-                           <b>{% trans "Nexthops:" %}</b> {{ dest.conflicting_rule.nexthops }}<br>
+                           <h4>{% trans "Conflicting Policies" %}</h4>
+                           {% for rule in dest.conflicting_rules %}
+                               <b>{% trans "Priority:" %}</b> {{ rule.priority }}<br>
+                               <b>{% trans "Source:" %}</b> {{ rule.source }}<br>
+                               <b>{% trans "Destination:" %}</b> {{ rule.destination }}<br>
+                               <b>{% trans "Action:" %}</b> {{ rule.action }}<br>
+                               <b>{% trans "Nexthops:" %}</b> {{ rule.nexthops }}<br>
+                               <br/>
+                           {% endfor %}
                        </div>
                        <div class="modal-footer">
                            <a href="{% url 'horizon:project:connections:index' %}" class="btn" data-dismiss="modal">
