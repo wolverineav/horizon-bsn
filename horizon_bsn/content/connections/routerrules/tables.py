@@ -24,6 +24,14 @@ from openstack_dashboard import policy
 LOG = logging.getLogger(__name__)
 
 
+class RouterFilterAction(tables.FilterAction):
+    def filter(self, table, policies, filter_string):
+        """Naive case-insentitive search."""
+        q = filter_string.lower()
+        return [policy for policy in policies
+                if q in policy.router_name.lower()]
+
+
 class AddRouterRule(policy.PolicyTargetMixin, tables.LinkAction):
     name = "create"
     verbose_name = _("Add Router Policy")
@@ -57,13 +65,14 @@ class RemoveRouterRule(policy.PolicyTargetMixin, tables.DeleteAction):
     policy_rules = (("network", "update_router"),)
 
     def delete(self, request, obj_id):
-        router_id = self.table.kwargs['router'].id
-        rulemanager.remove_rules(request, obj_id,
-                                 router_id=router_id)
+        rulemanager.remove_rules(request, obj_id)
 
 
 class RouterRulesTable(tables.DataTable):
+    id = tables.Column("id", hidden=True)
+    router = tables.Column("router_name", verbose_name=_("Router Name"))
     priority = tables.Column("priority", verbose_name=_("Priority"))
+
     source = tables.Column("source", verbose_name=_("Source CIDR"))
     destination = tables.Column("destination",
                                 verbose_name=_("Destination CIDR"))
@@ -71,13 +80,11 @@ class RouterRulesTable(tables.DataTable):
     nexthops = tables.Column("nexthops", verbose_name=_("Next Hops"))
 
     def get_object_display(self, rule):
-        return "(%(action)s) %(source)s -> %(destination)s" % rule
-
-    def get_object_id(self, datum):
-        return datum.priority
+        return ("Router %(router_name)s (%(action)s) %(priority)s "
+                "%(source)s -- %(destination)s") % rule
 
     class Meta(object):
         name = "routerrules"
         verbose_name = _("Router Policies")
-        table_actions = (AddRouterRule, RemoveRouterRule)
-        row_actions = (RemoveRouterRule, )
+        table_actions = (AddRouterRule, RemoveRouterRule, RouterFilterAction,)
+        row_actions = (RemoveRouterRule,)

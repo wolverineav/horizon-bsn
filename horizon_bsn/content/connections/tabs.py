@@ -189,4 +189,4 @@ class ConnectionsTabs(tabs.TabGroup):
     sticky = True
     tabs = (ReachabilityTestsTab, ReachabilityTestsAdminTab,
             NetworkTemplateTab, NetworkTemplateAdminTab,
-            rr_tabs.RulesGridTab, rr_tabs.RouterRulesTab)
+            rr_tabs.RouterRulesTab)

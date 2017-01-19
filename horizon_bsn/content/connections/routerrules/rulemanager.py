@@ -22,9 +22,12 @@ LOG = logging.getLogger(__name__)
 
 class RuleObject(dict):
     def __init__(self, rule):
+        # unique identifier is priority_routerid
+        rule['id'] = '_'.join([str(rule['priority']),
+                               rule['router_id']])
         super(RuleObject, self).__init__(rule)
         # Horizon references priority property for table operations
-        self.priority = rule['priority']
+        self.id = rule['id']
         # Flatten into csv for display
         self.nexthops = ','.join(rule['nexthops'])
 
@@ -69,13 +72,12 @@ def popup_messages(request, old_ruleset, new_ruleset):
         messages.warning(request, no_op_msg)
 
 
-def routerrule_list(request, **params):
-    if 'router_id' in params:
-        params['device_id'] = params['router_id']
-    if 'router' in request.META:
-        router = request.META['router']
+def routerrule_list(request, router_id):
+    if ('routers_dict' in request.META
+            and router_id in request.META['routers_dict']):
+        router = request.META['routers_dict'][router_id]
     else:
-        router = api.router_get(request, params['device_id'])
+        router = api.router_get(request, router_id)
     try:
         rules = router.router_rules
     except AttributeError:
@@ -83,44 +85,41 @@ def routerrule_list(request, **params):
     return (True, rules)
 
 
-def remove_rules(request, priority, **kwargs):
-    LOG.debug("remove_rules(): param=%s", kwargs)
-    router_id = kwargs['router_id']
-    supported, currentrules = routerrule_list(request,
-                                              **{'router_id': router_id})
+def remove_rules(request, rule_id):
+    LOG.debug("remove_rules(): rule_id=%s", rule_id)
+    prio_routerid = rule_id.split('_')
+    priority = prio_routerid[0]
+    router_id = prio_routerid[1]
+    supported, currentrules = routerrule_list(request, router_id)
     if not supported:
         LOG.error("router policies not supported by router %s" % router_id)
         return
     newrules = []
-    if 'reset_rules' in kwargs:
-        rule_reset = {'priority': -2,
-                      'source': 'any',
-                      'destination': 'any',
-                      'action': 'permit'}
-        newrules = [rule_reset]
-    else:
-        for oldrule in currentrules:
-            if oldrule['priority'] != int(priority):
-                newrules.append(oldrule)
+    for oldrule in currentrules:
+        if oldrule['priority'] != int(priority):
+            newrules.append(oldrule)
+
+    if not newrules:
+        LOG.error(_("Removal of last remaining rule is not permitted."))
+        return
     body = {'router_rules': format_for_api(newrules)}
     new = api.router_update(request, router_id, **body)
-    if 'router' in request.META:
-        request.META['router'] = new
+    if ('routers_dict' in request.META
+            and router_id in request.META['routers_dict']):
+        request.META['routers_dict'][router_id] = new
     popup_messages(request, currentrules, new.router_rules)
     return new
 
 
-def add_rule(request, router_id, newrule, **kwargs):
+def add_rule(request, router_id, newrule):
     body = {'router_rules': []}
-    kwargs['router_id'] = router_id
-    supported, currentrules = routerrule_list(request, **kwargs)
+    supported, currentrules = routerrule_list(request, router_id)
     if not supported:
         LOG.error("router policies not supported by router %s" % router_id)
         return
     body['router_rules'] = format_for_api([newrule] + currentrules)
     new = api.router_update(request, router_id, **body)
-    if 'router' in request.META:
-        request.META['router'] = new
+    request.META['routers_dict'][router_id] = new
     popup_messages(request, currentrules, new.router_rules)
     return new
 
