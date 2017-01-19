@@ -45,9 +45,11 @@ class RuleCIDRField(forms.IPField):
 
 
 class AddRouterRule(forms.SelfHandlingForm):
-    priority = forms.IntegerField(label=_("Priority"), initial=-1,
-                                  min_value=-1, max_value=3000, required=False,
-                                  widget=forms.HiddenInput())
+    router = forms.ChoiceField(label="Router", help_text="Select a Router.")
+
+    priority = forms.ChoiceField(label="Priority",
+                                 help_text="Select a Priority for the policy. "
+                                           "Lower value = higher priority.")
     source = RuleCIDRField(label=_("Source CIDR"),
                            widget=forms.TextInput())
     destination = RuleCIDRField(label=_("Destination CIDR"),
@@ -58,18 +60,39 @@ class AddRouterRule(forms.SelfHandlingForm):
                                   help_text=_("Next Hop field is ignored for "
                                               "Deny action"),
                                   widget=forms.TextInput(), required=False)
-    router_id = forms.CharField(label=_("Router ID"),
-                                widget=forms.HiddenInput())
-    router_name = forms.CharField(label=_("Router Name"),
-                                  widget=forms.TextInput(attrs={'readonly':
-                                                                'readonly'}),
-                                  required=False)
     failure_url = 'horizon:project:connections:index'
 
     def __init__(self, request, *args, **kwargs):
         super(AddRouterRule, self).__init__(request, *args, **kwargs)
         self.fields['action'].choices = [('permit', _('Permit')),
                                          ('deny', _('Deny'))]
+        self.fields['router'].choices = self.populate_router_choices(
+            request, self.request.META['routers_dict'])
+        self.fields['priority'].choices = self.populate_priority_choices(
+            request, self.request.META['routers_dict'])
+
+    def populate_router_choices(self, request, routers_dict):
+        routers = [(router.id, router.name)
+                   for router in routers_dict.values()]
+        if routers:
+            routers.insert(0, ("", _("Select a Router")))
+        else:
+            routers.insert(0, ("", _("No Routers available")))
+        return routers
+
+    def populate_priority_choices(self, request, routers_dict):
+        existing_priorities = []
+        for router in routers_dict.values():
+            for rule in router.router_rules:
+                existing_priorities.append(rule['priority'])
+
+        priorities = [(prio, prio) for prio in range(3000, 0, -1)
+                      if prio not in existing_priorities]
+        if priorities:
+            priorities.insert(0, ("", _("Select a Priority")))
+        else:
+            priorities.insert(0, ("", _("No Priorities available")))
+        return priorities
 
     def clean(self):
         cleaned_data = super(AddRouterRule, self).clean()
@@ -88,19 +111,12 @@ class AddRouterRule(forms.SelfHandlingForm):
 
     def handle(self, request, data, **kwargs):
         try:
-            if 'rule_to_delete' in request.POST:
-                rulemanager.remove_rules(request,
-                                         request.POST['rule_to_delete'],
-                                         router_id=data['router_id'])
-        except Exception:
-            exceptions.handle(request, _('Unable to delete router policy.'))
-        try:
             rule = {'priority': data['priority'],
                     'action': data['action'],
                     'source': data['source'],
                     'destination': data['destination'],
                     'nexthops': data['nexthops'].split(',')}
-            rulemanager.add_rule(request, router_id=data['router_id'],
+            rulemanager.add_rule(request, router_id=data['router'],
                                  newrule=rule)
             msg = _('Router policy action performed successfully.')
             LOG.debug(msg)
@@ -108,28 +124,6 @@ class AddRouterRule(forms.SelfHandlingForm):
             return True
         except Exception as e:
             msg = _('Failed to add router rule %s') % e
-            LOG.info(msg)
-            messages.error(request, msg)
-            redirect = reverse(self.failure_url)
-            exceptions.handle(request, msg, redirect=redirect)
-
-
-class ResetRouterRule(forms.SelfHandlingForm):
-    router_id = forms.CharField(label=_("Router ID"),
-                                widget=forms.TextInput(attrs={'readonly':
-                                                              'readonly'}))
-    failure_url = 'horizon:project:connections:index'
-
-    def handle(self, request, data, **kwargs):
-        try:
-            data['reset_rules'] = True
-            rulemanager.remove_rules(request, None, **data)
-            msg = _('Router policy reset performed successfully.')
-            LOG.debug(msg)
-            messages.success(request, msg)
-            return True
-        except Exception as e:
-            msg = _('Failed to reset router policy %s') % e
             LOG.info(msg)
             messages.error(request, msg)
             redirect = reverse(self.failure_url)
