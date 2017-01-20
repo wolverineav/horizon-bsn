@@ -24,6 +24,4 @@ urlpatterns = patterns(
     VIEWS_MOD,
     url(r'addrouterrule',
         views.AddRouterRuleView.as_view(), name='addrouterrule'),
-    url(r'resetrouterrule',
-        views.ResetRouterRuleView.as_view(), name='resetrouterrule')
 )

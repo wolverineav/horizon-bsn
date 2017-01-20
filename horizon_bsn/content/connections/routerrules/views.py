@@ -43,28 +43,23 @@ class AddRouterRuleView(forms.ModalFormView):
         try:
             routers = api.neutron.router_list(
                 self.request, **{'tenant_id': self.request.user.project_id})
-            router = routers[0] if routers else None
-            return router
+            return routers
         except Exception:
             redirect = reverse(self.url)
-            msg = _("Unable to retrieve router.")
+            msg = _('Unable to retrieve router(s) for the current tenant.')
             exceptions.handle(self.request, msg, redirect=redirect)
 
     def get_context_data(self, **kwargs):
         context = super(AddRouterRuleView, self).get_context_data(**kwargs)
-        context['router'] = self.get_object()
+        context['routers'] = self.get_object()
         return context
 
     def get_initial(self, **kwargs):
-        router = self.get_object()
+        routers = self.get_object()
         # store the router in the request so the rule manager doesn't have
         # to request it again from the API
-        self.request.META['router'] = router
-        return {"router_id": router.id,
-                "router_name": router.name_or_id}
-
-
-class ResetRouterRuleView(AddRouterRuleView):
-    form_class = rrforms.ResetRouterRule
-    template_name = None
-    page_title = _("Reset Router Policies")
+        routers_dict = {}
+        for router in routers:
+            routers_dict[router.id] = router
+        self.request.META['routers_dict'] = routers_dict
+        return {}
