@@ -12,15 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import netaddr
-
-from django import template
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tabs
-
-from openstack_dashboard import api
 
 from horizon_bsn.content.connections.routerrules import rulemanager
 from horizon_bsn.content.connections.routerrules import tables as rrtbl
@@ -28,192 +22,38 @@ from horizon_bsn.content.connections.routerrules import tables as rrtbl
 
 class RouterRulesTab(tabs.TableTab):
     table_classes = (rrtbl.RouterRulesTable,)
-    name = _("Router Policies")
+    name = _("Tenant Policies")
     slug = "routerrules"
     template_name = "horizon/common/_detail_table.html"
 
     def allowed(self, request):
-        try:
-            getattr(self.tab_group.kwargs['router'], 'router_rules')
-            return True
-        except Exception:
-            return False
+        routers = self.tab_group.kwargs['routers']
+        for router in routers:
+            try:
+                # if any one router has router rules, return true
+                getattr(router, 'router_rules')
+                return True
+            except Exception:
+                continue
+        return False
 
     def get_routerrules_data(self):
-        try:
-            routerrules = getattr(self.tab_group.kwargs['router'],
-                                  'router_rules')
-        except Exception:
-            routerrules = []
-        routerrules = sorted(routerrules, key=lambda k: k['priority'])
+        routerrules = []
+        routers = self.tab_group.kwargs['routers']
+        for router in routers:
+            try:
+                rules = getattr(router, 'router_rules')
+                # add router ID and name to the rules
+                for rule in rules:
+                    rule['router_id'] = router.id
+                    rule['router_name'] = router.name_or_id
+                    rule['id'] = '_'.join([str(rule['priority']),
+                                           rule['router_name']])
+                    routerrules.append(rule)
+            except Exception:
+                continue
+
+        if not routerrules:
+            return []
+        routerrules = sorted(routerrules, key=lambda k: k['id'])
         return [rulemanager.RuleObject(r) for r in routerrules]
-
-
-class RulesGridTab(tabs.Tab):
-    name = _("Router Policies Grid")
-    slug = "rulesgrid"
-    template_name = ("project/connections/routerrules/grid.html")
-
-    def allowed(self, request):
-        try:
-            getattr(self.tab_group.kwargs['router'], 'router_rules')
-            return True
-        except Exception:
-            return False
-
-    def render(self):
-        context = template.RequestContext(self.request)
-        return render_to_string(self.get_template_name(self.request),
-                                self.data, context_instance=context)
-
-    def get_context_data(self, request, **kwargs):
-        data = {'router': {'id':
-                           self.tab_group.kwargs['router'].id}}
-        self.request = request
-        rules, supported = self.get_routerrules_data(checksupport=True)
-        if supported:
-            data["rulesmatrix"] = self.get_routerrulesgrid_data(rules)
-        return data
-
-    def get_routerrulesgrid_data(self, rules):
-        ports = self.tab_group.kwargs['ports']
-        networks = api.neutron.network_list_for_tenant(
-            self.request, self.request.user.tenant_id)
-        netnamemap = {}
-        subnetmap = {}
-        for n in networks:
-            netnamemap[n['id']] = n.name_or_id
-            for s in n.subnets:
-                subnetmap[s.id] = {'name': s.name,
-                                   'cidr': s.cidr}
-
-        matrix = []
-        subnets = []
-        for port in ports:
-            for ip in port['fixed_ips']:
-                if ip['subnet_id'] not in subnetmap:
-                    continue
-                sub = {'ip': ip['ip_address'],
-                       'subnetid': ip['subnet_id'],
-                       'subnetname': subnetmap[ip['subnet_id']]['name'],
-                       'networkid': port['network_id'],
-                       'networkname': netnamemap[port['network_id']],
-                       'cidr': subnetmap[ip['subnet_id']]['cidr']}
-                subnets.append(sub)
-        subnets.append({'ip': '0.0.0.0',
-                        'subnetid': 'any',
-                        'subnetname': '',
-                        'networkname': 'any',
-                        'networkid': 'any',
-                        'cidr': '0.0.0.0/0'})
-        for source in subnets:
-            row = {'source': dict(source),
-                   'targets': []}
-            for target in subnets:
-                target.update(self._get_subnet_connectivity(
-                              source, target, rules))
-                row['targets'].append(dict(target))
-            matrix.append(row)
-        return matrix
-
-    def _get_subnet_connectivity(self, src_sub, dst_sub, rules):
-        v4_any_words = ['external', 'any']
-        connectivity = {'reachable': '',
-                        'inverse_rule': {},
-                        'rule_to_delete': False}
-        src = src_sub['cidr']
-        dst = dst_sub['cidr']
-        # differentiate between external and any
-        src_rulename = src_sub['subnetid'] if src == '0.0.0.0/0' else src
-        dst_rulename = dst_sub['subnetid'] if dst == '0.0.0.0/0' else dst
-        if str(src) == str(dst):
-            connectivity['reachable'] = 'full'
-            return connectivity
-        matchingrules = []
-
-        sortedrules = sorted(rules,
-                             key=lambda k: k['priority'])
-
-        for rule in sortedrules:
-            rd = rule['destination']
-            if rule['destination'] in v4_any_words:
-                rd = '0.0.0.0/0'
-            rs = rule['source']
-            if rule['source'] in v4_any_words:
-                rs = '0.0.0.0/0'
-            rs = netaddr.IPNetwork(rs)
-            src = netaddr.IPNetwork(src)
-            rd = netaddr.IPNetwork(rd)
-            dst = netaddr.IPNetwork(dst)
-            # check if cidrs are affected by rule first
-            if (int(dst.network) >= int(rd[-1]) or
-                    int(dst[-1]) <= int(rd.network) or
-                    int(src.network) >= int(rs[-1]) or
-                    int(src[-1]) <= int(rs.network)):
-                continue
-
-            # skip matching rules for 'any' and 'external' networks
-            if (str(dst) == '0.0.0.0/0' and str(rd) != '0.0.0.0/0'):
-                continue
-            if (str(src) == '0.0.0.0/0' and str(rs) != '0.0.0.0/0'):
-                continue
-
-            # external network rules only affect external traffic
-            if (rule['source'] == 'external' and
-                    src_rulename not in v4_any_words):
-                continue
-            if (rule['destination'] == 'external' and
-                    dst_rulename not in v4_any_words):
-                continue
-
-            match = {'priority': rule['priority'],
-                     'bitsinsrc': rs.prefixlen,
-                     'bitsindst': rd.prefixlen,
-                     'rule': rule}
-            matchingrules.append(match)
-
-        if not matchingrules:
-            connectivity['reachable'] = 'none'
-            connectivity['inverse_rule'] = {'priority': -1,
-                                            'source': src_rulename,
-                                            'destination': dst_rulename,
-                                            'action': 'permit'}
-            return connectivity
-
-        sortedrules = sorted(matchingrules,
-                             key=lambda k: k['priority'])
-        match = sortedrules[0]
-        if (match['bitsinsrc'] > src.prefixlen or
-                match['bitsindst'] > dst.prefixlen):
-            connectivity['reachable'] = 'partial'
-            connectivity['conflicting_rule'] = match['rule']
-            return connectivity
-
-        if (match['rule']['source'] == src_rulename and
-                match['rule']['destination'] == dst_rulename):
-            connectivity['rule_to_delete'] = match['rule']
-
-        if match['rule']['action'] == 'permit':
-            connectivity['reachable'] = 'full'
-            inverseaction = 'deny'
-        else:
-            connectivity['reachable'] = 'none'
-            inverseaction = 'permit'
-        connectivity['inverse_rule'] = {'priority': -1,
-                                        'source': src_rulename,
-                                        'destination': dst_rulename,
-                                        'action': inverseaction}
-        return connectivity
-
-    def get_routerrules_data(self, checksupport=False):
-        try:
-            routerrules = getattr(self.tab_group.kwargs['router'],
-                                  'router_rules')
-            supported = True
-        except Exception:
-            routerrules = []
-            supported = False
-
-        if checksupport:
-            return routerrules, supported
-        return routerrules
