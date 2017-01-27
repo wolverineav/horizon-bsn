@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        8.37.1
+Version:        8.37.2
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Thu Jan 26 2017 Aditya Vaja <wolverine.av@gmail.com> - 8.37.2
+- OSP-19 ensure policy is deleted in MLR case
 * Thu Jan 19 2017 Aditya Vaja <wolverine.av@gmail.com> - 8.37.1
 - OSP-6 handle MLR in horizon
 * Fri Sep 2 2016 Aditya Vaja <wolverine.av@gmail.com> - 8.37.0
