@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        20153.37.3
+Version:        20153.37.4
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Fri Feb 3 2017 Aditya Vaja <wolverine.av@gmail.com> - 20153.37.4
+- OSP-26 check for presence of routers
 * Thu Jan 26 2017 Aditya Vaja <wolverine.av@gmail.com> - 20153.37.3
 - OSP-19 ensure policy is deleted in MLR case
 * Thu Jan 19 2017 Aditya Vaja <wolverine.av@gmail.com> - 20153.37.2
@@ -86,24 +88,3 @@ done
 - BVS-6497: present a warning when policy change doesn't affect existing policy set
 - BVS-6323 limit testpath visiblity to tenants
 - ensure quick testpath names are unique
-* Thu Jun 23 2016 Aditya Vaja <wolverine.av@gmail.com> - 20153.36.1
-- BVS-6497: present a warning when policy change doesn't affect existing policy set
-* Fri Jun 10 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.8
-- BVS-6323 limit testpath visiblity to tenants
-* Tue May 24 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.7
-- ensure quick testpath names are unique
-* Tue May 17 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.6
-- BVS-3794 correct the modal for conflicting rules
-* Tue May 17 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.5
-- BVS-5473 replace occurances of rule with policy
-- BVS-5785 fix tenant choices in quick test
-- tweak build script for upload to pypi
-- copy RPMS along with SRPMS
-* Fri May 13 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.4
-- align reset button
-- testpath policy
-- build automation
-* Thu Apr 21 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.2
-- Release 2015.3.2 with visual and navigation fixes
-* Fri Apr 15 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.1
-- Release 2015.2.1 package for liberty

@@ -27,7 +27,9 @@ class RouterRulesTab(tabs.TableTab):
     template_name = "horizon/common/_detail_table.html"
 
     def allowed(self, request):
-        routers = self.tab_group.kwargs['routers']
+        routers = []
+        if 'routers' in self.tab_group.kwargs:
+            routers = self.tab_group.kwargs['routers']
         for router in routers:
             try:
                 # if any one router has router rules, return true
