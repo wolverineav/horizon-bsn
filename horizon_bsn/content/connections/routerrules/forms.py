@@ -45,11 +45,13 @@ class RuleCIDRField(forms.IPField):
 
 
 class AddRouterRule(forms.SelfHandlingForm):
-    router = forms.ChoiceField(label="Router", help_text="Select a Router.")
+    router = forms.ChoiceField(label=_("Router"),
+                               help_text=_("Select a Router."))
 
-    priority = forms.ChoiceField(label="Priority",
-                                 help_text="Select a Priority for the policy. "
-                                           "Lower value = higher priority.")
+    priority = forms.ChoiceField(label=_("Priority"),
+                                 help_text=_("Select a Priority for the "
+                                             "policy. Lower value = higher "
+                                             "priority."))
     source = RuleCIDRField(label=_("Source CIDR"),
                            widget=forms.TextInput())
     destination = RuleCIDRField(label=_("Destination CIDR"),
