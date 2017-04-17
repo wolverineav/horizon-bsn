@@ -47,7 +47,7 @@ EXPECTATION_CHOICES = [('default', _('--- Select Result ---')),
                        ('unspecified source', _('unspecified source')),
                        ('unsupported', _('unsupported')),
                        ('invalid input', _('invalid input')),
-                       ('inconsistent status', ('inconsistent status')),
+                       ('inconsistent status', _('inconsistent status')),
                        ('no traffic detected', _('no traffic detected'))]
 
 
@@ -58,12 +58,12 @@ class CreateReachabilityTest(forms.SelfHandlingForm):
                            required=True)
 
     src_tenant_name = forms.ChoiceField(
-        label="Source Tenant",
-        help_text="Test reachability for current tenant only.")
+        label=_("Source Tenant"),
+        help_text=_("Test reachability for current tenant only."))
 
     src_segment_name = forms.ChoiceField(
-        label="Source Segment",
-        help_text="Select a source segment name.")
+        label=_("Source Segment"),
+        help_text=_("Select a source segment name."))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateReachabilityTest, self).__init__(request, *args, **kwargs)
@@ -174,12 +174,12 @@ class UpdateForm(CreateReachabilityTest):
 class RunQuickTestForm(forms.SelfHandlingForm):
 
     src_tenant_name = forms.ChoiceField(
-        label="Source Tenant",
-        help_text="Select a source tenant name.")
+        label=_("Source Tenant"),
+        help_text=_("Select a source tenant name."))
 
     src_segment_name = forms.ChoiceField(
-        label="Source Segment",
-        help_text="Select a source segment name.")
+        label=_("Source Segment"),
+        help_text=_("Select a source segment name."))
 
     def __init__(self, request, *args, **kwargs):
         super(RunQuickTestForm, self).__init__(request, *args, **kwargs)

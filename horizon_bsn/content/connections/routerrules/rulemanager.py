@@ -14,6 +14,7 @@
 
 import logging
 
+from django.utils.translation import ugettext_lazy as _
 from horizon import messages
 from openstack_dashboard.api import neutron as api
 
@@ -92,7 +93,7 @@ def remove_rules(request, rule_id):
     router_id = prio_routerid[1]
     supported, currentrules = routerrule_list(request, router_id)
     if not supported:
-        LOG.error("router policies not supported by router %s" % router_id)
+        LOG.error(_("router policies not supported by router %s") % router_id)
         return
     newrules = []
     for oldrule in currentrules:
@@ -111,7 +112,7 @@ def add_rule(request, router_id, newrule):
     body = {'router_rules': []}
     supported, currentrules = routerrule_list(request, router_id)
     if not supported:
-        LOG.error("router policies not supported by router %s" % router_id)
+        LOG.error(_("router policies not supported by router %s") % router_id)
         return
     body['router_rules'] = format_for_api([newrule] + currentrules)
     new = api.router_update(request, router_id, **body)
