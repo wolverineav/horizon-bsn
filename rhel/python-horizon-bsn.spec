@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        0.0.26
+Version:        0.0.27
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,7 +72,9 @@ done
 %postun
 
 %changelog
-* Fri Feb 3 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.25
+* Mon Apr 17 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.27
+- BVS-4634: internationalize text
+* Fri Feb 3 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.26
 - OSP-26 check for presence of routers
 * Thu Jan 26 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.25
 - OSP-19 ensure policy is deleted in MLR case
