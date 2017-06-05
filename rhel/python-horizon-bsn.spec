@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        8.37.4
+Version:        8.37.5
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Mon Jun 05 2017 Aditya Vaja <wolverine.av@gmail.com> - 8.37.5
+- OSP-36: member user should be able to create reachability test
 * Mon Apr 17 2017 Aditya Vaja <wolverine.av@gmail.com> - 8.37.4
 - BVS-4634: internationalize text
 * Fri Feb 3 2017 Aditya Vaja <wolverine.av@gmail.com> - 8.37.3
