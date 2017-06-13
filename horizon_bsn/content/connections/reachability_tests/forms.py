@@ -25,7 +25,6 @@ from horizon import messages
 
 from horizon_bsn.api import neutron
 import logging
-from openstack_dashboard.api import keystone
 from openstack_dashboard.api import neutron as osneutron
 
 import re
