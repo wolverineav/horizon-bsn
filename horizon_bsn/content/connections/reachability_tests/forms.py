@@ -25,7 +25,6 @@ from horizon import messages
 
 from horizon_bsn.api import neutron
 import logging
-from openstack_dashboard.api import keystone
 from openstack_dashboard.api import neutron as osneutron
 
 import re
@@ -183,13 +182,7 @@ class RunQuickTestForm(forms.SelfHandlingForm):
             .populate_segment_choices(request)
 
     def populate_tenant_choices(self, request):
-        tenant = keystone.tenant_get(request, request.user.project_id)
-        tenant_list = []
-        if tenant:
-            tenant_list = [(tenant.name, tenant.name)]
-        else:
-            tenant_list.insert(0, ("", _("No tenants available")))
-        return tenant_list
+        return [(request.user.tenant_name, request.user.tenant_name)]
 
     def populate_segment_choices(self, request):
         networks = osneutron.network_list(request,
