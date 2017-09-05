@@ -2,7 +2,6 @@
 pwd
 echo 'git commit is' ${GIT_COMMIT}
 git clean -fxd
-sudo pip install --upgrade 'tox==2.3.1'
 tox -e pep8
 setup_cfg_modified=`git log -m -1 --name-only --pretty="format:" | grep setup.cfg | wc -l`
 if [ ${setup_cfg_modified} -ne 1 ];
