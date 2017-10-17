@@ -6,18 +6,20 @@
 {% block page_header %}
   {% include "horizon/common/_page_header.html" with title=_("Reachability Test Details: ")|add:reachabilitytest.name|default:_("Reachability Test Details:") %}
 <style>
-.command-prompt-background {
+.command-prompt-background, .logicalpath-prompt-background {
   background-color: black;
   border: 2px solid gray;
   border-radius: 5px;
   margin: 5px 5px 5px 5px;
 }
-.command-prompt-text {
+.command-prompt-text, .logicalpath-prompt-text {
   color: white;
   margin: 10px 10px 10px 10px;
   font-family: FreeMono, monospace;
   font-size: 12px;
+  white-space: pre-wrap;
 }
+
 </style>
 {% endblock page_header %}
 
@@ -26,6 +28,8 @@
   <div class="col-sm-12">
   {{ tab_group.render }}
   <div class="command-prompt-holder" style="display:none;">{{reachabilitytest.command_line|default:_("None")}}
+  </div>
+  <div class="logicalpath-prompt-holder" style="display:none;">{{reachabilitytest.logical_path_cli|default:_("None")}}
   </div>
 </div>
 <script type='text/javascript'>
@@ -39,6 +43,13 @@ $(function(){
 
         for( var i =  0 ; i < numberOfListItems ; ++i){
                 $(listElement).append("<div>" + cleanData[i] + "</div>");
+        }
+    var cleanLogpathData = $(".logicalpath-prompt-holder").text().split("\n");
+	var listLogpathElement = $(".logicalpath-prompt-text");
+        var numberOfLogpathListItems = cleanLogpathData.length;
+
+        for( var i =  0 ; i < numberOfLogpathListItems ; ++i){
+                $(listLogpathElement).append("<div>" + cleanLogpathData[i] + "</div>");
         }
 });
 
