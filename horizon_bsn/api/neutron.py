@@ -46,6 +46,30 @@ def convert_to_cli(result_detail):
     return command_line
 
 
+def convert_logicalpath_to_cli(result_logical_path):
+    l = []
+    l.append("{:15s} {:30s} {:30s} {:30s} {:30s} {:30s}".format(
+        "Hop Index",
+        "Hop",
+        "Ingress Interface",
+        "Policy",
+        "Route",
+        "Egress Interface"))
+
+    if result_logical_path:
+        for hop in result_logical_path:
+            l.append("{:15s} {:30s} {:30s} {:30s} {:30s} {:30s}".format(
+                str(hop.get("hop-index", '')),
+                hop.get("hop", ''),
+                hop.get("ingress-interface-name", ''),
+                hop.get("policy", ''),
+                hop.get("route", ''),
+                hop.get("egress-interface-name", '')))
+
+    command_line = '\n'.join(l)
+    return command_line
+
+
 def reachabilitytest_get(request, reachabilitytest_id):
     LOG.debug("reachabilitytest_get(): id=%s",
               reachabilitytest_id)
@@ -55,6 +79,9 @@ def reachabilitytest_get(request, reachabilitytest_id):
     # add field command_line to put CLI representation
     reachabilitytest['command_line'] = \
         convert_to_cli(reachabilitytest['detail'])
+    # field for CLI repr of logical-path
+    reachabilitytest['logical_path_cli'] = convert_logicalpath_to_cli(
+        reachabilitytest['logical_path'])
     return NeutronAPIDictWrapper(reachabilitytest)
 
 
