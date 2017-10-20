@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        9.42.2
+Version:        9.42.3
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Fri Oct 20 2017 Aditya Vaja <wolverine.av@gmail.com> - 9.42.3
+- BCF-6592: add logical path to the output testpath on horizon
 * Tue Jun 13 2017 Aditya Vaja <wolverine.av@gmail.com> - 9.42.2
 - OSP-36: missed a replacement for quicktest tenant get
 * Mon Jun 05 2017 Aditya Vaja <wolverine.av@gmail.com> - 9.42.1
