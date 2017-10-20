@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 # install twine, to be added to infra puppet script
 sudo -H pip install twine
-CURR_VERSION=$(awk '/^version/{print $3}' setup.cfg)
+CURR_VERSION=$(awk '/^version/{print $3}' /horizon-bsn/setup.cfg)
 
 # get pypi and gpg creds in place
 mv $PYPIRC_FILE ~/.pypirc

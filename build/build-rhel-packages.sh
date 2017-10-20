@@ -2,7 +2,7 @@
 
 DOCKER_IMAGE=$DOCKER_REGISTRY'/horizon-bsn-builder:latest'
 BUILD_OS=centos7-x86_64
-CURR_VERSION=$(awk '/^version/{print $3}' setup.cfg)
+CURR_VERSION=$(awk '/^version/{print $3}' /horizon-bsn/setup.cfg)
 
 docker pull $DOCKER_IMAGE
 
