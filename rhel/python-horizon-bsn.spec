@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        0.0.31
+Version:        10.42.0
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,52 +72,5 @@ done
 %postun
 
 %changelog
-* Fri Oct 20 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.31
-- show logical path for testpath
-* Mon Aug 28 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.30
-- build changes
-* Tue Jun 13 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.29
-- OSP-36: missed a replacement for quicktest tenant get
-* Mon Jun 05 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.28
-- OSP-36: member user should be able to create reachability test
-* Mon Apr 17 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.27
-- BVS-4634: internationalize text
-* Fri Feb 3 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.26
-- OSP-26 check for presence of routers
-* Thu Jan 26 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.25
-- OSP-19 ensure policy is deleted in MLR case
-* Thu Jan 19 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.24
-- OSP-6 handle MLR in horizon
-* Fri Nov 18 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.23
-- BVS-6565 router policy look and feel enhancements
-* Fri Sep 2 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.22
-- move angular enabled files to future_enabled
-* Mon Aug 29 2016 Michael Xiong <mmxiong@ucla.edu> - 0.0.21
-- BVS-6759: move horizon dashboard to use the new AngularJS framework
-* Thu Jun 23 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.20
-- BVS-6497: present a warning when policy change doesn't affect existing policy set
-* Fri Jun 10 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.19
-- BVS-6323 limit testpath visiblity to tenants
-* Tue May 24 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.18
-- ensure quick testpath names are unique
-* Tue May 17 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.17
-- BVS-3794 correct the modal for conflicting rules
-* Mon May 16 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.16
-- BVS-5473 replace occurances of rule with policy
-- BVS-5785 fix tenant choices in quick test
-* Mon May 16 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.15
-- tweak build script for upload to pypi
-* Thu May 12 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.14
-- copy RPMS along with SRPMS
-* Thu May 12 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.13
-- minor fix
-* Thu May 12 2016 Aditya Vaja <wolverine.av@gmail.com> - 0.0.12
-- add build infra to automate upload and rpm packaging
-* Thu Apr 21 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.2
-- Release 2015.3.2 with visual and navigation fixes
-* Fri Apr 15 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.3.1
-- Release 2015.2.1 package for liberty
-* Fri Apr 15 2016 Aditya Vaja <wolverine.av@gmail.com> - 2015.2.1
-- Release 2015.2.1 package for kilo_v2
-* Sat Mar 5 2016 Xin Wu <xin.wu@bigswitch.com> - 0.0.1-1
-- Initial rpm for horizon-rpm
+* Fri Oct 20 2017 Aditya Vaja <wolverine.av@gmail.com> - 10.42.0
+- branch for stable/ocata
