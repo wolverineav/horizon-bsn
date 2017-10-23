@@ -12,13 +12,16 @@
 # limitations under the License.
 
 """
-Views for Connections tab.
+Views for managing reachability test.
 """
+from django.core.urlresolvers import reverse_lazy
+from horizon import forms
+from horizon_bsn.api import neutron
+from horizon_bsn.content.connections.tenant_policies \
+    import forms as project_forms
 
-from horizon import tabs
-from horizon_bsn.content.connections import tabs as project_tabs
 
-
-class IndexView(tabs.TabbedTableView):
-    tab_group_class = project_tabs.ConnectionsTabs
-    template_name = 'project/connections/index.html'
+class CreateTenantPolicyView(forms.ModalFormView):
+    form_class = project_forms.AddTenantPolicy
+    template_name = 'project/connections/tenant_policies/create.html'
+    success_url = reverse_lazy("horizon:project:connections:index")

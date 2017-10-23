@@ -14,14 +14,12 @@
 from django.conf.urls import patterns  # noqa
 from django.conf.urls import url  # noqa
 
-from horizon_bsn.content.connections.routerrules import views
+from horizon_bsn.content.connections.tenant_policies import views
 
 VIEWS_MOD = (
-    'horizon_bsn.content.connections.router_rules.views')
-
+    'horizon_bsn.content.connections.tenant_policies.views')
 
 urlpatterns = patterns(
     VIEWS_MOD,
-    url(r'addrouterrule',
-        views.AddRouterRuleView.as_view(), name='addrouterrule'),
+    url(r'^create/$', views.CreateTenantPolicyView.as_view(), name='create'),
 )
