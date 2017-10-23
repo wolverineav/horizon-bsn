@@ -17,7 +17,10 @@ import logging
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+from horizon import exceptions
 from horizon import tabs
+from horizon.utils import memoized
+from openstack_dashboard import api
 
 from horizon_bsn.api import neutron
 from horizon_bsn.content.connections.network_template.tables \
@@ -26,7 +29,8 @@ from horizon_bsn.content.connections.network_template.tables \
     import NetworkTemplateTable
 from horizon_bsn.content.connections.reachability_tests.tables \
     import ReachabilityTestsTable
-from horizon_bsn.content.connections.routerrules import tabs as rr_tabs
+from horizon_bsn.content.connections.tenant_policies.tables \
+    import TenantPoliciesTable
 
 import json
 
@@ -182,6 +186,40 @@ class ReachabilityTestsAdminTab(tabs.TableTab):
             return []
 
 
+class TenantPoliciesTab(tabs.TableTab):
+    table_classes = (TenantPoliciesTable,)
+    name = _("Tenant Policies")
+    slug = "tenantpolicy_tab"
+    template_name = "horizon/common/_detail_table.html"
+
+    @memoized.memoized_method
+    def _get_routers(self, request):
+        try:
+            routers = api.neutron.router_list(
+                request, **{'tenant_id': self.request.user.project_id})
+            return routers
+        except Exception:
+            msg = _('Unable to retrieve router(s) for the current tenant.')
+            exceptions.handle(self.request, msg)
+
+    def allowed(self, request):
+        # don't show the regular tab to admins
+        # don't show if no routers exist for tenant
+        routers = self._get_routers(request)
+        return (not request.path_info.startswith('/admin/')
+                and len(routers) > 0
+                and super(TenantPoliciesTab, self).allowed(request))
+
+    def get_tenantpolicies_data(self):
+        try:
+            tenantpolicies = neutron.tenantpolicy_list(
+                self.request, **{'tenant_id': self.request.user.project_id})
+            tenantpolicies = sorted(tenantpolicies, key=lambda k: k.priority)
+            return tenantpolicies
+        except Exception as e:
+            return []
+
+
 class ConnectionsTabs(tabs.TabGroup):
     slug = "connections_tabs"
     # TODO(kevinbenton): re-enabled top talkers once implemented
@@ -189,4 +227,4 @@ class ConnectionsTabs(tabs.TabGroup):
     sticky = True
     tabs = (ReachabilityTestsTab, ReachabilityTestsAdminTab,
             NetworkTemplateTab, NetworkTemplateAdminTab,
-            rr_tabs.RouterRulesTab)
+            TenantPoliciesTab)

@@ -1,4 +1,8 @@
-# Copyright 2013,  Big Switch Networks
+# Copyright 2012 United States Government as represented by the
+# Administrator of the National Aeronautics and Space Administration.
+# All Rights Reserved.
+#
+# Copyright 2012 Nebula, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -12,16 +16,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
-
-from django.core.exceptions import ValidationError  # noqa
 from django.core.urlresolvers import reverse
+from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
-
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
-from horizon_bsn.content.connections.routerrules import rulemanager
+
+from horizon_bsn.api import neutron
+
+import logging
 
 LOG = logging.getLogger(__name__)
 
@@ -44,19 +48,30 @@ class RuleCIDRField(forms.IPField):
             super(RuleCIDRField, self).validate(value)
 
 
-class AddRouterRule(forms.SelfHandlingForm):
-    router = forms.ChoiceField(label=_("Router"),
-                               help_text=_("Select a Router."))
+class PortField(forms.DecimalField):
+    """Port number input
+    """
+    def validate(self, value):
+        if int(value) not in range(0, 65536):
+            raise ValidationError(_("Port must be in the range of 0 to 65535"))
+        super(PortField, self).validate(value)
 
+
+class AddTenantPolicy(forms.SelfHandlingForm):
     priority = forms.ChoiceField(label=_("Priority"),
                                  help_text=_("Select a Priority for the "
                                              "policy. Lower value = higher "
                                              "priority."))
-    source = RuleCIDRField(label=_("Source CIDR"),
-                           widget=forms.TextInput())
+    source = RuleCIDRField(label=_("Source CIDR"), widget=forms.TextInput())
+    source_port = PortField(required=False, initial=0)
     destination = RuleCIDRField(label=_("Destination CIDR"),
                                 widget=forms.TextInput())
+    destination_port = PortField(required=False, initial=0)
     action = forms.ChoiceField(label=_("Action"))
+    protocol = forms.ChoiceField(label=_("Protocol"),
+                                 help_text=_("Protocol is mandatory when "
+                                             "specifying port for the policy "
+                                             "traffic."), required=False)
     nexthops = forms.MultiIPField(label=_("Optional: Next Hop "
                                           "Addresses (comma delimited)"),
                                   help_text=_("Next Hop field is ignored for "
@@ -65,28 +80,21 @@ class AddRouterRule(forms.SelfHandlingForm):
     failure_url = 'horizon:project:connections:index'
 
     def __init__(self, request, *args, **kwargs):
-        super(AddRouterRule, self).__init__(request, *args, **kwargs)
+        super(AddTenantPolicy, self).__init__(request, *args, **kwargs)
         self.fields['action'].choices = [('permit', _('Permit')),
                                          ('deny', _('Deny'))]
-        self.fields['router'].choices = self.populate_router_choices(
-            request, self.request.META['routers_dict'])
         self.fields['priority'].choices = self.populate_priority_choices(
-            request, self.request.META['routers_dict'])
+            request)
+        self.fields['protocol'].choices = [('', _('None')),
+                                           ('tcp', 'TCP'),
+                                           ('udp', 'UDP')]
 
-    def populate_router_choices(self, request, routers_dict):
-        routers = [(router.id, router.name)
-                   for router in routers_dict.values()]
-        if routers:
-            routers.insert(0, ("", _("Select a Router")))
-        else:
-            routers.insert(0, ("", _("No Routers available")))
-        return routers
-
-    def populate_priority_choices(self, request, routers_dict):
+    def populate_priority_choices(self, request):
         existing_priorities = []
-        for router in routers_dict.values():
-            for rule in router.router_rules:
-                existing_priorities.append(rule['priority'])
+        all_policies = neutron.tenantpolicy_list(
+            request, **{'tenant_id': request.user.project_id})
+        for policy in all_policies:
+            existing_priorities.append(policy['priority'])
 
         priorities = [(prio, prio) for prio in range(3000, 0, -1)
                       if prio not in existing_priorities]
@@ -97,7 +105,7 @@ class AddRouterRule(forms.SelfHandlingForm):
         return priorities
 
     def clean(self):
-        cleaned_data = super(AddRouterRule, self).clean()
+        cleaned_data = super(AddTenantPolicy, self).clean()
         if 'priority' not in cleaned_data:
             cleaned_data['priority'] = -1
         if 'nexthops' not in cleaned_data:
@@ -111,19 +119,20 @@ class AddRouterRule(forms.SelfHandlingForm):
             cleaned_data['nexthops'] = ''
         return cleaned_data
 
+    def _validate_protocol(self, data):
+        if ((int(data['source_port']) > 0 or int(data['destination_port']) > 0)
+            and data['protocol'] not in ['tcp', 'udp']):
+            raise ValidationError('Protocol must be specified if either '
+                                  'source or destination port is specified')
+
     def handle(self, request, data, **kwargs):
         try:
-            rule = {'priority': data['priority'],
-                    'action': data['action'],
-                    'source': data['source'],
-                    'destination': data['destination'],
-                    'nexthops': data['nexthops'].split(',')}
-            rulemanager.add_rule(request, router_id=data['router'],
-                                 newrule=rule)
-            msg = _('Router policy action performed successfully.')
+            self._validate_protocol(data)
+            tenantpolicy = neutron.tenantpolicy_create(request, **data)
+            msg = _("Tenant Policy was successfully created")
             LOG.debug(msg)
             messages.success(request, msg)
-            return True
+            return tenantpolicy
         except Exception as e:
             msg = _('Failed to add router rule %s') % e
             LOG.info(msg)
