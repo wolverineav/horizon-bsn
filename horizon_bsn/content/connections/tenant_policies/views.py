@@ -16,7 +16,6 @@ Views for managing reachability test.
 """
 from django.core.urlresolvers import reverse_lazy
 from horizon import forms
-from horizon_bsn.api import neutron
 from horizon_bsn.content.connections.tenant_policies \
     import forms as project_forms
 
