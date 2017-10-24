@@ -216,7 +216,7 @@ class TenantPoliciesTab(tabs.TableTab):
                 self.request, **{'tenant_id': self.request.user.project_id})
             tenantpolicies = sorted(tenantpolicies, key=lambda k: k.priority)
             return tenantpolicies
-        except Exception as e:
+        except Exception:
             return []
 
 

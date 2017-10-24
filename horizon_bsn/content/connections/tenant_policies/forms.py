@@ -50,6 +50,7 @@ class RuleCIDRField(forms.IPField):
 
 class PortField(forms.DecimalField):
     """Port number input
+
     """
     def validate(self, value):
         if int(value) not in range(0, 65536):
@@ -121,7 +122,7 @@ class AddTenantPolicy(forms.SelfHandlingForm):
 
     def _validate_protocol(self, data):
         if ((int(data['source_port']) > 0 or int(data['destination_port']) > 0)
-            and data['protocol'] not in ['tcp', 'udp']):
+                and data['protocol'] not in ['tcp', 'udp']):
             raise ValidationError('Protocol must be specified if either '
                                   'source or destination port is specified')
 
