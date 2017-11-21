@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        10.42.0
+Version:        10.46.0
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,5 +72,7 @@ done
 %postun
 
 %changelog
+* Tue Nov 21 2017 Aditya Vaja <wolverine.av@gmail.com> - 10.46.0
+- tag ocata with first stable controller version
 * Fri Oct 20 2017 Aditya Vaja <wolverine.av@gmail.com> - 10.42.0
 - branch for stable/ocata
