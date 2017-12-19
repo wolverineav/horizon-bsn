@@ -19,8 +19,8 @@ from horizon_bsn.content.connections.network_template \
     import urls as network_template_urls
 from horizon_bsn.content.connections.reachability_tests \
     import urls as reachability_tests_urls
-from horizon_bsn.content.connections.routerrules \
-    import urls as routerrules_urls
+from horizon_bsn.content.connections.tenant_policies \
+    import urls as tenant_policies_urls
 from horizon_bsn.content.connections import views
 
 import os
@@ -35,12 +35,12 @@ LIB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
 urlpatterns = patterns(
     '',
     url(r'^$', views.IndexView.as_view(), name='index'),
-    url(r'routerrules/',
-        include(routerrules_urls, namespace='routerrules')),
     url(r'reachability_tests/',
         include(reachability_tests_urls, namespace='reachability_tests')),
     url(r'network_template/',
         include(network_template_urls, namespace='network_template')),
+    url(r'tenant_policies/',
+        include(tenant_policies_urls, namespace='tenant_policies')),
     url(r'^css/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': CSS_PATH, 'show_indexes': True}),
     url(r'^js/(?P<path>.*)$', 'django.views.static.serve',
