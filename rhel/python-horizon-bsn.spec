@@ -72,7 +72,7 @@ done
 %postun
 
 %changelog
-* Tue Oct 24 2017 Aditya Vaja <wolverine.av@gmail.com> - 10.46.1
+* Tue Dec 19 2017 Aditya Vaja <wolverine.av@gmail.com> - 10.46.1
 - OSP-17: move policies from router to tenant + L4 ACL
 * Tue Nov 21 2017 Aditya Vaja <wolverine.av@gmail.com> - 10.46.0
 - tag ocata with first stable controller version
