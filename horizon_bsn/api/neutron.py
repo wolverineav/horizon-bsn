@@ -365,3 +365,76 @@ def reachabilityquicktest_delete(request, reachabilityquicktest_id):
               reachabilityquicktest_id)
     neutronclient(request).delete_reachabilityquicktest(
         reachabilityquicktest_id)
+
+
+def tenantpolicy_list(request, **params):
+    LOG.debug("tenantpolicy_list(): params=%s", params)
+    tenantpolicies = neutronclient(request).list_tenantpolicies(**params)
+    object_list = [NeutronAPIDictWrapper(obj)
+                   for obj in tenantpolicies['tenantpolicies']]
+    return object_list
+
+
+def tenantpolicy_get(request, tenantpolicy_id):
+    LOG.debug("tenantpolicy_get(): id=%s", tenantpolicy_id)
+    tenantpolicy = (neutronclient(request)
+                    .show_tenantpolicy(tenantpolicy_id)
+                    .get('tenantpolicy'))
+    return NeutronAPIDictWrapper(tenantpolicy)
+
+
+def tenantpolicy_create(request, **params):
+    """Create a tenant policy.
+
+    :param request: request context
+    :param tenant_id: (optional) tenant id of the reachability test created
+    :param priority:
+    :param source: source IP or range
+    :param source_port: (optional)
+    :param destination: destination IP or range
+    :param destination_port: (optional)
+    :param protocol: (optional) TCP or UDP
+    :param action: permit or deny
+    :param nexthops: [] list of nexthop IPs
+    """
+    LOG.debug("tenantpolicy_create(): params=%s", params)
+    if 'tenant_id' not in params:
+        params['tenant_id'] = request.user.project_id
+    body = {'tenantpolicy': params}
+    tenantpolicy = (neutronclient(request)
+                    .create_tenantpolicy(body)
+                    .get('tenantpolicy'))
+    return NeutronAPIDictWrapper(tenantpolicy)
+
+
+def tenantpolicy_update(request, tenantpolicy_id, **params):
+    """Update a tenant policy.
+
+    :param request: request context
+    :param tenant_id: (optional) tenant id of the reachability test created
+    :param priority:
+    :param source: source IP or range
+    :param source_port: (optional)
+    :param destination: destination IP or range
+    :param destination_port: (optional)
+    :param protocol: (optional) TCP or UDP
+    :param action: permit or deny
+    :param nexthops: [] list of nexthop IPs
+    """
+    LOG.debug("tenantpolicy_update(): params=%s", params)
+    if 'tenant_id' in params:
+        LOG.debug("Removing tenant_id from params, it cannot be changed")
+        params.pop('tenant_id')
+    if 'id' in params:
+        LOG.debug("Removing id from params, it cannot be changed")
+        params.pop('id', None)
+    body = {'tenantpolicy': params}
+    tenantpolicy = (neutronclient(request)
+                    .update_tenantpolicy(tenantpolicy_id, body)
+                    .get('tenantpolicy'))
+    return NeutronAPIDictWrapper(tenantpolicy)
+
+
+def tenantpolicy_delete(request, tenantpolicy_id):
+    LOG.debug("tenantpolicy_delete(): tenantpolicy_id=%s", tenantpolicy_id)
+    neutronclient(request).delete_tenantpolicy(tenantpolicy_id)
