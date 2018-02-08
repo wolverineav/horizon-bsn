@@ -72,7 +72,7 @@ done
 %postun
 
 %changelog
-* Thu Feb 08 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.33
+* Thu Feb 08 2018 Aditya Vaja <wolverine.av@gmail.com> - 0.0.33
 - BCF-9905: fix superclass deprecations causing error during horizon startup
 * Tue Oct 24 2017 Aditya Vaja <wolverine.av@gmail.com> - 0.0.32
 - OSP-17: move policies from router to tenant + L4 ACL
