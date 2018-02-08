@@ -15,6 +15,7 @@ from django.http import Http404
 from django.utils.safestring import mark_safe
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 from horizon import messages
 from horizon import tables
 from horizon_bsn.api import neutron
@@ -235,6 +236,22 @@ class DeleteTemplateAction(tables.DeleteAction):
             messages.error(
                 request, _("Unable to delete template. Template may "
                            "be in use by a tenant."))
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Network Template",
+            u"Delete Network Templates",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Network Template",
+            u"Deleted Network Templates",
+            count
+        )
 
 
 class CreateTemplateAction(tables.LinkAction):
