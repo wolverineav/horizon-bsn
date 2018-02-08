@@ -17,6 +17,7 @@ from horizon.utils import filters
 
 from django.template.defaultfilters import title
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy
 from horizon_bsn.api import neutron
 
 
@@ -30,6 +31,22 @@ class DeleteReachabilityTests(tables.DeleteAction):
         except Exception:
             exceptions.handle(request,
                               _("Failed to update reachability test"))
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Delete Reachability Test",
+            u"Delete Reachability Tests",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Deleted Reachability Test",
+            u"Deleted Reachability Tests",
+            count
+        )
 
 
 class CreateReachabilityTest(tables.LinkAction):
@@ -57,13 +74,27 @@ class ReachabilityTestFilterAction(tables.FilterAction):
 
 class RunTest(tables.BatchAction):
     name = "run"
-    action_present = _("Run")
-    action_past = _("Running")
     data_type_singular = _("Test")
     classes = ("btn-edit", )
 
     def action(self, request, id):
         neutron.reachabilitytest_update(request, id, **{'run_test': True})
+
+    @staticmethod
+    def action_present(count):
+        return ungettext_lazy(
+            u"Run Reachability Test",
+            u"Run Reachability Tests",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ungettext_lazy(
+            u"Running Reachability Test",
+            u"Running Reachability Tests",
+            count
+        )
 
 
 class UpdateTest(tables.LinkAction):
