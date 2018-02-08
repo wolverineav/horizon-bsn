@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        11.0.0
+Version:        11.0.1
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,5 +72,7 @@ done
 %postun
 
 %changelog
+* Thu Feb 08 2018 Aditya Vaja <wolverine.av@gmail.com> - 11.0.1
+- BCF-9905: fix superclass deprecations causing error during horizon startup
 * Tue Jan 30 2017 Aditya Vaja <wolverine.av@gmail.com> - 11.0.0
 - branch for stable/pike
