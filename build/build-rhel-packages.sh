@@ -21,6 +21,7 @@ rm -rf "$OUTDIR" && mkdir -p "$OUTDIR"
 mv $BUILDDIR/SRPMS/*.rpm "$OUTDIR"
 mv $BUILDDIR/RPMS/noarch/*.rpm "$OUTDIR"
 cp dist/*.tar.gz "$OUTDIR"
+cp rhel/horizon_container_workaround.sh "$OUTDIR"
 git log > "$OUTDIR/gitlog.txt"
 touch "$OUTDIR/build-$CURR_VERSION"
 ln -snf $(basename $OUTDIR) $OUTDIR/../latest
