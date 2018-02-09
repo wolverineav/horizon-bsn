@@ -1,8 +1,9 @@
 #!/bin/bash -eux
 
 CONTAINER_BUILD_DIR='openstack_horizon_bigswitch'
+BSN_HORIZON_TAG='12.0.1'
 
-# recreate worksapace for container build
+# recreate workspace for container build
 rm -rf ${CONTAINER_BUILD_DIR}
 mkdir -p ${CONTAINER_BUILD_DIR}
 
@@ -37,9 +38,9 @@ RUN cp /usr/lib/python2.7/site-packages/horizon_bsn/enabled/* /usr/lib/python2.7
 # USER horizon
 EOF
 
-sudo docker build ./ -t latest_bsn_tag
-IMAGE_ID=`sudo docker images -q latest_bsn_tag`
+sudo docker build ./ -t ${BSN_HORIZON_TAG}
+IMAGE_ID=`sudo docker images -q ${BSN_HORIZON_TAG}`
 
 # tag latest build image and push to local registry
-sudo docker tag ${IMAGE_ID} ${LOCAL_REGISTRY_ADDRESS}/openstack-horizon-bigswitch:latest_bsn_tag
-sudo docker push ${LOCAL_REGISTRY_ADDRESS}/openstack-horizon-bigswitch:latest_bsn_tag
+sudo docker tag ${IMAGE_ID} ${LOCAL_REGISTRY_ADDRESS}/openstack-horizon-bigswitch:${BSN_HORIZON_TAG}
+sudo docker push ${LOCAL_REGISTRY_ADDRESS}/openstack-horizon-bigswitch:${BSN_HORIZON_TAG}
