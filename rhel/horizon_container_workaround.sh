@@ -9,7 +9,6 @@ mkdir -p ${CONTAINER_BUILD_DIR}
 
 # copy required packages to build dir
 cp python-horizon-bsn-*.rpm ${CONTAINER_BUILD_DIR}/
-curl -O "http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/p/python-lockfile-0.9.1-4.el7.noarch.rpm"
 cp python-lockfile*.rpm ${CONTAINER_BUILD_DIR}/
 
 # container tag_id used to deploy overcloud
