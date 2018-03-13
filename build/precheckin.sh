@@ -4,7 +4,7 @@ echo 'git commit is' ${GIT_COMMIT}
 git clean -fxd
 tox -e pep8
 setup_cfg_modified=`git log -m -1 --name-only --pretty="format:" | grep setup.cfg | wc -l`
-if [ ${setup_cfg_modified} -ne 1 ];
+if [ ${setup_cfg_modified} -lt 1 ];
   then echo "Update setup.cfg with new version number. Build FAILED";
   exit 1;
 else
