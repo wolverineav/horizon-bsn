@@ -21,7 +21,7 @@ python setup.py sdist
 twine upload dist/* -r pypi -s -i "Big Switch Networks" || true
 # delay of 5 seconds
 sleep 5
-sudo -H pip install --upgrade horizon-bsn==$CURR_VERSION
+pip install --upgrade horizon-bsn==$CURR_VERSION
 if [ "$?" -eq "0" ]
 then
   echo "PYPI upload successful."
@@ -29,7 +29,7 @@ else
   echo "PYPI upload FAILED. Check the logs."
 fi
 # remove the package
-sudo -H pip uninstall -y horizon-bsn
+pip uninstall -y horizon-bsn
 
 # revert the permissions
 chown -R $OUTER_UID:$OUTER_GID /horizon-bsn
