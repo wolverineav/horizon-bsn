@@ -19,8 +19,8 @@ python setup.py sdist
 
 # force success. but always check if pip install fails
 twine upload dist/* -r pypi -s -i "Big Switch Networks" || true
-# delay of 5 seconds
-sleep 5
+# delay of 15 seconds
+sleep 15
 pip install --upgrade horizon-bsn==$CURR_VERSION
 if [ "$?" -eq "0" ]
 then
