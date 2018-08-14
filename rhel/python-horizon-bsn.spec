@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        12.0.0
+Version:        12.0.1
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,5 +72,7 @@ done
 %postun
 
 %changelog
+* Tue Aug 14 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.1
+- increase delay when checking pypi for package
 * Tue Aug 14 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.0
 - branch for stable/queens
