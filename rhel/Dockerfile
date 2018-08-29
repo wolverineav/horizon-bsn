@@ -7,7 +7,7 @@ LABEL name="rhosp13/openstack-horizon-bigswitch" \
       release="1" \
       summary="Red Hat OpenStack Platform 13.0 Horizon Big Switch Networks Plugin" \
       description="Red Hat OpenStack Platform 13.0 Horizon Big Switch Networks Plugin"
-# switch to root and install networking-bigswitch from PYPI
+# switch to root and install horizon-bsn from PYPI
 USER root
 RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
 RUN python /tmp/get-pip.py
