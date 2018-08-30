@@ -15,5 +15,8 @@ RUN pip install --upgrade "python-bsn-neutronclient"
 RUN pip install --upgrade "horizon-bsn>=12.0.0,<12.1.0"
 # copy enabled files
 RUN cp /usr/lib/python2.7/site-packages/horizon_bsn/enabled/* /usr/lib/python2.7/site-packages/openstack_dashboard/local/enabled/
+# copy License
+RUN mkdir /licenses
+RUN curl -L -o /licenses/LICENSE https://raw.githubusercontent.com/bigswitch/horizon-bsn/master/LICENSE
 # switch the container back to the neutron user
 USER horizon
