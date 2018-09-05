@@ -3,7 +3,7 @@ MAINTAINER Big Switch Networks Inc <rhosp-bugs-internal@bigswitch.com>
 LABEL name="rhosp13/openstack-horizon-bigswitch" \
       maintainer="rhosp-bugs-internal@bigswitch.com" \
       vendor="Big Switch Networks Inc" \
-      version="12.0" \
+      version="13.0" \
       release="1" \
       summary="Red Hat OpenStack Platform 13.0 Horizon Big Switch Networks Plugin" \
       description="Red Hat OpenStack Platform 13.0 Horizon Big Switch Networks Plugin"
