@@ -12,7 +12,6 @@
 # limitations under the License.
 
 from django.conf.urls import include  # noqa
-from django.conf.urls import patterns  # noqa
 from django.conf.urls import url  # noqa
 
 from horizon_bsn.content.connections.network_template \
@@ -32,8 +31,7 @@ JS_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
 LIB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                         'templates', 'connections', 'lib')
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'reachability_tests/',
         include(reachability_tests_urls, namespace='reachability_tests')),
@@ -47,4 +45,4 @@ urlpatterns = patterns(
         {'document_root': JS_PATH, 'show_indexes': True}),
     url(r'^lib/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': LIB_PATH, 'show_indexes': True}),
-)
+]
