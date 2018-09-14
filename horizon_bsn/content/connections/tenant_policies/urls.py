@@ -19,6 +19,6 @@ VIEWS_MOD = (
     'horizon_bsn.content.connections.tenant_policies.views')
 
 urlpatterns = [
-    VIEWS_MOD,
+    # VIEWS_MOD,
     url(r'^create/$', views.CreateTenantPolicyView.as_view(), name='create'),
 ]

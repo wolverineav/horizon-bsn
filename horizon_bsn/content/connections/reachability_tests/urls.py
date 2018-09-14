@@ -20,7 +20,7 @@ VIEWS_MOD = (
     'horizon_bsn.content.connections.reachability_tests.views')
 
 urlpatterns = [
-    VIEWS_MOD,
+    # VIEWS_MOD,
     url(r'^create/$', views.CreateView.as_view(), name='create'),
     url(r'^run/$', views.RunQuickTestView.as_view(), name='run'),
     url(r'^quicktest/$', views.QuickDetailView.as_view(), name='quick'),
