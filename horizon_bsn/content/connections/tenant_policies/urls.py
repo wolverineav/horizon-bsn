@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf.urls import patterns  # noqa
 from django.conf.urls import url  # noqa
 
 from horizon_bsn.content.connections.tenant_policies import views
@@ -19,7 +18,7 @@ from horizon_bsn.content.connections.tenant_policies import views
 VIEWS_MOD = (
     'horizon_bsn.content.connections.tenant_policies.views')
 
-urlpatterns = patterns(
+urlpatterns = [
     VIEWS_MOD,
     url(r'^create/$', views.CreateTenantPolicyView.as_view(), name='create'),
-)
+]

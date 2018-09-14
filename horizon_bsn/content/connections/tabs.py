@@ -34,7 +34,10 @@ from horizon_bsn.content.connections.tenant_policies.tables \
 
 import json
 
-from openstack_dashboard.api import heat
+try:
+    from openstack_dashboard.api import heat
+except Exception as e:
+    pass
 
 LOG = logging.getLogger(__name__)
 

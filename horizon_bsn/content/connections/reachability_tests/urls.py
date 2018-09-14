@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf.urls import patterns  # noqa
 from django.conf.urls import url  # noqa
 
 from horizon_bsn.content.connections.reachability_tests \
@@ -20,7 +19,7 @@ from horizon_bsn.content.connections.reachability_tests \
 VIEWS_MOD = (
     'horizon_bsn.content.connections.reachability_tests.views')
 
-urlpatterns = patterns(
+urlpatterns = [
     VIEWS_MOD,
     url(r'^create/$', views.CreateView.as_view(), name='create'),
     url(r'^run/$', views.RunQuickTestView.as_view(), name='run'),
@@ -30,4 +29,4 @@ urlpatterns = patterns(
         views.UpdateView.as_view(), name='update'),
     url(r'^(?P<id>[^/]+)/$',
         views.DetailView.as_view(), name='detail'),
-)
+]
