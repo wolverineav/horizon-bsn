@@ -19,7 +19,11 @@ from django.utils.translation import ungettext_lazy
 from horizon import messages
 from horizon import tables
 from horizon_bsn.api import neutron
-from openstack_dashboard.api import heat
+
+try:
+    from openstack_dashboard.api import heat
+except Exception as e:
+    pass
 
 import logging
 
