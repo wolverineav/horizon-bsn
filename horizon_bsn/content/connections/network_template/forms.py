@@ -21,7 +21,11 @@ from horizon_bsn.api import neutron
 
 import logging
 
-from openstack_dashboard.api import heat
+try:
+    from openstack_dashboard.api import heat
+except Exception as e:
+    pass
+
 
 LOG = logging.getLogger(__name__)
 

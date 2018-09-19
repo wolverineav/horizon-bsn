@@ -11,15 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf.urls import patterns  # noqa
 from django.conf.urls import url  # noqa
 
 from horizon_bsn.content.connections.network_template import views
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^detail/(?P<template_id>[^/]+)$',
         views.DetailView.as_view(), name='detail'),
     url(r'^create/$', views.CreateView.as_view(), name='create'),
-)
+]

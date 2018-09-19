@@ -19,7 +19,11 @@ from openstack_dashboard.api.rest import utils as rest_utils
 
 from horizon_bsn.api import neutron as bsnneutron
 
-from openstack_dashboard.api import heat
+try:
+    from openstack_dashboard.api import heat
+except Exception as e:
+    pass
+
 from openstack_dashboard.api import neutron
 
 from horizon_bsn.content.connections.tabs import get_stack_topology

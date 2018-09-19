@@ -11,14 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.conf.urls import patterns  # noqa
 from django.conf.urls import url  # noqa
 
 from horizon_bsn.content.connections.network_template import views
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^apply_template/(?P<template_id>[^/]+)$',
         views.ApplyTemplateView.as_view(), name='apply'),
     url(r'^select_template/$',
@@ -27,4 +25,4 @@ urlpatterns = patterns(
         views.PopulateTemplateView.as_view(), name='populate_template'),
     url(r'^remove_template/$',
         views.RemoveTemplateView.as_view(), name='remove'),
-)
+]

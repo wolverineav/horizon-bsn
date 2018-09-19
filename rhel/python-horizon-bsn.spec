@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        0.0.35
+Version:        0.0.36
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Wed Sep 19 2018 Aditya Vaja <wolverine.av@gmail.com> - 0.0.36
+- OSP-218: fix errors in queens release due to Django version update
 * Wed Aug 29 2018 Aditya Vaja <wolverine.av@gmail.com> - 0.0.35
 - add Dockerfile for RHOSP container build and license info for dependencies
 * Tue Mar 13 2018 Aditya Vaja <wolverine.av@gmail.com> - 0.0.34
