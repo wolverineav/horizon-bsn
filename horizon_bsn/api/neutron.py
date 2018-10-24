@@ -14,7 +14,7 @@
 from __future__ import absolute_import
 
 import logging
-
+from horizon import exceptions
 from openstack_dashboard.api import neutron
 from openstack_dashboard.api.neutron import NeutronAPIDictWrapper
 
@@ -40,11 +40,22 @@ def check_ext_raise_exc(request):
 
 
 def reachabilitytest_list(request, **params):
+    """Return a list of reachability tests under current tenant
+
+    src_tenant and src_segment display strings are patched.
+    :param request: request context
+    :param params:
+    :return: list of NeutronAPIDictWrapper(<test>)
+    """
     LOG.debug("reachabilitytest_list(): params=%s", params)
     reachabilitytests = neutronclient(request)\
         .list_reachabilitytests(**params)
-    object_list = [NeutronAPIDictWrapper(obj)
-                   for obj in reachabilitytests['reachabilitytests']]
+
+    object_list = []
+    for obj in reachabilitytests['reachabilitytests']:
+        add_tenant_and_segment_display(obj)
+        object_list.append(NeutronAPIDictWrapper(obj))
+
     return object_list
 
 
@@ -85,7 +96,51 @@ def convert_logicalpath_to_cli(result_logical_path):
     return command_line
 
 
+def add_tenant_and_segment_display(obj):
+    """Add src_tenant and src_tenant to obj
+
+    src_tenant:
+        eg1. tenant_name (tenant_id)
+        eg2. tenant_name (Unknown_ID)
+        name can not be empty
+    src_segment:
+        eg1. segment_name (segment_id)
+        eg2. (segment_id)
+        eg3. segment_name (Unknown_ID)
+        name can be empty
+    Adds Unknown_ID in case of upgrade from old Horzion version
+    :param obj: obj that contains src_tenant and src_segment info
+    :return:
+    """
+    if not obj.get('src_tenant_id'):
+        tenant_id = 'Unknown_ID'
+    else:
+        tenant_id = obj.get('src_tenant_id')
+
+    if not obj.get('src_segment_id'):
+        segment_id = 'Unknown_ID'
+    else:
+        segment_id = obj.get('src_segment_id')
+
+    obj['src_tenant'] \
+        = '%s (%s)' % (obj['src_tenant_name'], tenant_id)
+
+    if obj.get('src_segment_name'):
+        obj['src_segment'] \
+            = '%s (%s)' % (obj['src_segment_name'], segment_id)
+    else:
+        obj['src_segment'] \
+            = '(%s)' % segment_id
+
+
 def reachabilitytest_get(request, reachabilitytest_id):
+    """Return a reachability test's info
+
+    src_tenant and src_segment display strings are patched.
+    :param request: request context
+    :param reachabilitytest_id: id of the test
+    :return: NeutronAPIDictWrapper(<test>)
+    """
     LOG.debug("reachabilitytest_get(): id=%s",
               reachabilitytest_id)
     reachabilitytest = neutronclient(request)\
@@ -97,6 +152,9 @@ def reachabilitytest_get(request, reachabilitytest_id):
     # field for CLI repr of logical-path
     reachabilitytest['logical_path_cli'] = convert_logicalpath_to_cli(
         reachabilitytest['logical_path'])
+
+    add_tenant_and_segment_display(reachabilitytest)
+
     return NeutronAPIDictWrapper(reachabilitytest)
 
 
@@ -106,21 +164,28 @@ def reachabilitytest_create(request, **params):
     :param request: request context
     :param tenant_id: (optional) tenant id of the reachability test created
     :param name: name of the reachability test
-    :param src_tenant_name: tenant name of the source ip
-    :param src_segment_name: segment name of the source ip
+    :param src_tenant_id: source tenant id
+    :param src_tenant_name: source tenant name
+    :param src_segment_id: source segment id
+    :param src_segment_name: source segment name
     :param src_ip: source ip of the reachability test
     :param dst_ip: destination ip of the reachability test
     :param expected_result: expected result of the reachability test
     """
     LOG.debug("reachabilitytest_create(): params=%s", params)
-    check_ext_raise_exc(request)
-    if 'tenant_id' not in params:
-        params['tenant_id'] = request.user.project_id
-    body = {'reachabilitytest': params}
-    reachabilitytest = neutronclient(request)\
-        .create_reachabilitytest(body)\
-        .get('reachabilitytest')
-    return NeutronAPIDictWrapper(reachabilitytest)
+    try:
+        check_ext_raise_exc(request)
+        if 'tenant_id' not in params:
+            params['tenant_id'] = request.user.project_id
+        body = {'reachabilitytest': params}
+        reachabilitytest = neutronclient(request) \
+            .create_reachabilitytest(body) \
+            .get('reachabilitytest')
+        return NeutronAPIDictWrapper(reachabilitytest)
+
+    except Exception as e:
+        msg = e.message
+        exceptions.handle(request, msg, escalate=True)
 
 
 def reachabilitytest_update(request, reachabilitytest_id, **params):
@@ -129,25 +194,32 @@ def reachabilitytest_update(request, reachabilitytest_id, **params):
     :param request: request context
     :param tenant_id: (optional) tenant id of the reachability test modified
     :param name: name of the reachability test
-    :param src_tenant_id: tenant id of the source ip
-    :param src_segment_id: segment id of the source ip
+    :param src_tenant_id: source tenant id
+    :param src_tenant_name: source tenant name
+    :param src_segment_id: source segment id
+    :param src_segment_name: source segment name
     :param src_ip: source ip of the reachability test
     :param dst_ip: destination ip of the reachability test
     :param expected_result: expected result of the reachability test
     :param run_test: boolean flag to run the test
     """
     LOG.debug("reachabilitytest_update(): params=%s", params)
-    if 'tenant_id' in params:
-        LOG.debug("Removing tenant_id from params, it cannot be changed")
-        params.pop('tenant_id')
-    if 'id' in params:
-        LOG.debug("Removing id from params, it cannot be changed")
-        params.pop('id', None)
-    body = {'reachabilitytest': params}
-    reachabilitytest = neutronclient(request)\
-        .update_reachabilitytest(reachabilitytest_id, body)\
-        .get('reachabilitytest')
-    return NeutronAPIDictWrapper(reachabilitytest)
+    try:
+        if 'tenant_id' in params:
+            LOG.debug("Removing tenant_id from params, it cannot be changed")
+            params.pop('tenant_id')
+        if 'id' in params:
+            LOG.debug("Removing id from params, it cannot be changed")
+            params.pop('id', None)
+        body = {'reachabilitytest': params}
+        reachabilitytest = neutronclient(request)\
+            .update_reachabilitytest(reachabilitytest_id, body)\
+            .get('reachabilitytest')
+        return NeutronAPIDictWrapper(reachabilitytest)
+
+    except Exception as e:
+        msg = e.message
+        exceptions.handle(request, msg, escalate=True)
 
 
 def reachabilitytest_delete(request, reachabilitytest_id):
@@ -309,15 +381,33 @@ def networktemplateassignment_create(request, **params):
 
 
 def reachabilityquicktest_list(request, **params):
+    """Return a list of reachability quick tests under current tenant
+
+    src_tenant and src_segment display strings are patched.
+    :param request: request context
+    :param params:
+    :return: list of NeutronAPIDictWrapper(<quick_test>)
+    """
     LOG.debug("reachabilityquicktest_list(): params=%s", params)
     reachabilityquicktests = neutronclient(request)\
         .list_reachabilityquicktests(**params)
-    return \
-        [NeutronAPIDictWrapper(obj)
-         for obj in reachabilityquicktests['reachabilityquicktests']]
+
+    object_list = []
+    for obj in reachabilityquicktests['reachabilityquicktests']:
+        add_tenant_and_segment_display(obj)
+        object_list.append(NeutronAPIDictWrapper(obj))
+
+    return object_list
 
 
 def reachabilityquicktest_get(request, reachabilityquicktest_id):
+    """Return a quick test info
+
+    src_tenant and src_segment display strings are patched.
+    :param request: request context
+    :param reachabilityquicktest_id: id of the quick test
+    :return: NeutronAPIDictWrapper(<quick_test>)
+    """
     LOG.debug("reachabilityquicktest_get(): id=%s",
               reachabilityquicktest_id)
     reachabilityquicktest = neutronclient(request)\
@@ -326,6 +416,9 @@ def reachabilityquicktest_get(request, reachabilityquicktest_id):
     # add field command_line to put CLI representation
     reachabilityquicktest['command_line'] = \
         convert_to_cli(reachabilityquicktest['detail'])
+
+    add_tenant_and_segment_display(reachabilityquicktest)
+
     return NeutronAPIDictWrapper(reachabilityquicktest)
 
 
@@ -335,21 +428,27 @@ def reachabilityquicktest_create(request, **params):
     :param request: request context
     :param tenant_id: (optional) tenant id of the reachability quick test
     :param name: name of the reachability test
-    :param src_tenant_id: tenant id of the source ip
-    :param src_segment_id: segment id of the source ip
+    :param src_tenant_id: source tenant id
+    :param src_tenant_name: source tenant name
+    :param src_segment_id: source segment id
+    :param src_segment_name: source segment name
     :param src_ip: source ip of the reachability test
     :param dst_ip: destination ip of the reachability test
     :param expected_result: expected result of the reachability test
     """
     LOG.debug("reachabilityquicktest_create(): params=%s", params)
-    check_ext_raise_exc(request)
-    if 'tenant_id' not in params:
-        params['tenant_id'] = request.user.project_id
-    body = {'reachabilityquicktest': params}
-    reachabilityquicktest = neutronclient(request)\
-        .create_reachabilityquicktest(body)\
-        .get('reachabilityquicktest')
-    return NeutronAPIDictWrapper(reachabilityquicktest)
+    try:
+        check_ext_raise_exc(request)
+        if 'tenant_id' not in params:
+            params['tenant_id'] = request.user.project_id
+        body = {'reachabilityquicktest': params}
+        reachabilityquicktest = neutronclient(request)\
+            .create_reachabilityquicktest(body)\
+            .get('reachabilityquicktest')
+        return NeutronAPIDictWrapper(reachabilityquicktest)
+    except Exception as e:
+        msg = e.message
+        exceptions.handle(request, msg, escalate=True)
 
 
 def reachabilityquicktest_update(request, reachabilityquicktest_id, **params):
@@ -358,25 +457,31 @@ def reachabilityquicktest_update(request, reachabilityquicktest_id, **params):
     :param request: request context
     :param tenant_id: (optional) tenant id of the reachability test modified
     :param name: name of the reachability test
-    :param src_tenant_id: tenant id of the source ip
-    :param src_segment_id: segment id of the source ip
+    :param src_tenant_id: source tenant id
+    :param src_tenant_name: source tenant name
+    :param src_segment_id: source segment id
+    :param src_segment_name: source segment name
     :param src_ip: source ip of the reachability test
     :param dst_ip: destination ip of the reachability test
     :param expected_result: expected result of the reachability test
     :param run_test: boolean flag to run the test
     """
     LOG.debug("reachabilityquicktest_update(): params=%s", params)
-    if 'tenant_id' in params:
-        LOG.debug("Removing tenant_id from params, it cannot be changed")
-        params.pop('tenant_id')
-    if 'id' in params:
-        LOG.debug("Removing id from params, it cannot be changed")
-        params.pop('id', None)
-    body = {'reachabilityquicktest': params}
-    reachabilityquicktest = neutronclient(request)\
-        .update_reachabilityquicktest(reachabilityquicktest_id, body)\
-        .get('reachabilityquicktest')
-    return NeutronAPIDictWrapper(reachabilityquicktest)
+    try:
+        if 'tenant_id' in params:
+            LOG.debug("Removing tenant_id from params, it cannot be changed")
+            params.pop('tenant_id')
+        if 'id' in params:
+            LOG.debug("Removing id from params, it cannot be changed")
+            params.pop('id', None)
+        body = {'reachabilityquicktest': params}
+        reachabilityquicktest = neutronclient(request)\
+            .update_reachabilityquicktest(reachabilityquicktest_id, body)\
+            .get('reachabilityquicktest')
+        return NeutronAPIDictWrapper(reachabilityquicktest)
+    except Exception as e:
+        msg = e.message
+        exceptions.handle(request, msg, escalate=True)
 
 
 def reachabilityquicktest_delete(request, reachabilityquicktest_id):
