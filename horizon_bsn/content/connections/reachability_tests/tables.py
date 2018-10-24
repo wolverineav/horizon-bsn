@@ -78,7 +78,11 @@ class RunTest(tables.BatchAction):
     classes = ("btn-edit", )
 
     def action(self, request, id):
-        neutron.reachabilitytest_update(request, id, **{'run_test': True})
+        try:
+            neutron.reachabilitytest_update(request, id, **{'run_test': True})
+        except Exception as e:
+            msg = e.message
+            exceptions.handle(request, msg, escalate=True)
 
     @staticmethod
     def action_present(count):
@@ -124,12 +128,24 @@ STATUS_CHOICES = (
 class ReachabilityTestsTable(tables.DataTable):
     id = tables.Column("id", hidden=True)
     name = tables.Column("name", verbose_name=_("Name"))
+
+    src_tenant = tables.WrappingColumn(
+        "src_tenant", verbose_name="Source Tenant")
+    src_segment = tables.WrappingColumn(
+        "src_segment", verbose_name="Source Segment")
+
+    src_tenant_id = tables.Column(
+        "src_tenant_id", verbose_name="Source Tenant ID", hidden=True)
     src_tenant_name = tables.Column(
-        "src_tenant_name", verbose_name="Source Tenant")
+        "src_tenant_name", verbose_name="Source Tenant Name", hidden=True)
+    src_segment_id = tables.Column(
+        "src_segment_id", verbose_name="Source Segment ID", hidden=True)
     src_segment_name = tables.Column(
-        "src_segment_name", verbose_name="Source Segment")
+        "src_segment_name", verbose_name="Source Segment Name", hidden=True)
+
     src_ip = tables.Column("src_ip", verbose_name=_("Source IP"))
     dst_ip = tables.Column("dst_ip", verbose_name=_("Destination IP"))
+
     test_time = tables.Column(
         "test_time",
         link=("horizon:project:connections:reachability_tests:detail"),

@@ -27,6 +27,7 @@ from horizon_bsn.api import neutron
 import logging
 from openstack_dashboard.api import neutron as osneutron
 
+import ast
 import re
 
 LOG = logging.getLogger(__name__)
@@ -50,41 +51,120 @@ EXPECTATION_CHOICES = [('default', _('--- Select Result ---')),
                        ('no traffic detected', _('no traffic detected'))]
 
 
+def extract_src_tenant_and_segment(obj):
+    """Extract src_tenant and src_segment from obj
+
+    :param obj: an object that contains src_tenant and src_segment string
+            eg. obj['src_tenant']\
+                =u"{'tenant_id': u'tenant_id',
+                    'tenant_name':  u'tenant_name'}"
+                obj['src_segment']\
+                =u"{'segment_id': u'segment_id',
+                    'segment_name':  u'segment_name'}"
+    :return: this operates on the original object
+             tenant and segment info will be extracted from the obj
+             src_tenant and src_segment are deleted after the operation
+              eg.
+                obj{ ...#other attr
+                     'src_tenant_id'=u'tenant_id',
+                     'src_tenant_name'=u'tenant_name',
+                     'src_segment_id'=u'segment_id',
+                     'src_segment_name'=u'segment_name'
+                    }
+    """
+    if obj.get('src_tenant'):
+        src_tenant = ast.literal_eval(obj['src_tenant'])
+
+        obj['src_tenant_id'] = src_tenant.get('tenant_id')
+        obj['src_tenant_name'] = src_tenant.get('tenant_name')
+
+        del(obj['src_tenant'])
+
+    if obj.get('src_segment'):
+        src_segment = ast.literal_eval(obj['src_segment'])
+
+        obj['src_segment_id'] = src_segment.get('segment_id')
+        obj['src_segment_name'] = src_segment.get('segment_name')
+
+        del(obj['src_segment'])
+
+
+def populate_tenant_choices(request):
+    """Returns a list of tenant info tuple for creating select options
+
+    This only creates 1 option, which is user's current tenant/project
+    :param request: object that contents tenant info
+             -  request.user.tenant_name
+             -  request.user.tenant_id
+    :return: [(tenant_obj, tenant_display_string)]
+            eg.
+              [{'tenant_id':u'tenant_id', 'tenant_name': u'tenant_name'},
+              u'tenant_name (tenant_id)']
+    """
+    # tenant_name (tenant_id)
+    display = '%s (%s)' % (request.user.tenant_name,
+                           request.user.tenant_id)
+    value = {'tenant_name': request.user.tenant_name,
+             'tenant_id': request.user.tenant_id}
+    return [(value, display)]
+
+
+def populate_segment_choices(request):
+    """Returns a list of segment info tuples for creating select options
+
+    This creates the list based on current project
+    :param request: request info
+             -  request.user.project_id
+    :return: [(segment_obj, segment_display_string)]
+            eg1. Has a segment name
+              [{'segment_id':u'tenant_id', 'segment_name': u'segment_name'},
+              u'segment_name (segment_id)']
+            eg2. No segment name
+              [{'segment_id':u'tenant_id', 'segment_name': u'segment_name'},
+              u'segment_name (segment_id)']
+    """
+    networks = osneutron.network_list(request,
+                                      tenant_id=request.user.project_id,
+                                      shared=False)
+    segment_list = []
+    for network in networks:
+        value = {'segment_id': network.id,
+                 'segment_name': network.name}
+        if network.name:
+            # segment_name (segment_id)
+            display = '%s (%s)' % (network.name, network.id)
+        else:
+            # (segment_id)
+            display = '(%s)' % network.id
+        segment_list.append((value, display))
+
+    if segment_list:
+        segment_list.insert(0, ("", _("Select a Segment")))
+    else:
+        segment_list.insert(0, ("", _("No segments available")))
+    return segment_list
+
+
 class CreateReachabilityTest(forms.SelfHandlingForm):
 
     name = forms.CharField(max_length="64",
                            label=_("Name"),
                            required=True)
 
-    src_tenant_name = forms.ChoiceField(
+    src_tenant = forms.ChoiceField(
         label=_("Source Tenant"),
         help_text=_("Test reachability for current tenant only."))
 
-    src_segment_name = forms.ChoiceField(
+    src_segment = forms.ChoiceField(
         label=_("Source Segment"),
-        help_text=_("Select a source segment name."))
+        help_text=_("Select a source segment."))
 
     def __init__(self, request, *args, **kwargs):
         super(CreateReachabilityTest, self).__init__(request, *args, **kwargs)
-        self.fields['src_tenant_name'].choices = self\
-            .populate_tenant_choices(request)
-        self.fields['src_tenant_name'].widget.attrs['readonly'] = True
-        self.fields['src_segment_name'].choices = self\
-            .populate_segment_choices(request)
 
-    def populate_tenant_choices(self, request):
-        return [(request.user.tenant_name, request.user.tenant_name)]
-
-    def populate_segment_choices(self, request):
-        networks = osneutron.network_list(request,
-                                          tenant_id=request.user.project_id,
-                                          shared=False)
-        segment_list = [(network.name, network.name) for network in networks]
-        if segment_list:
-            segment_list.insert(0, ("", _("Select a Segment")))
-        else:
-            segment_list.insert(0, ("", _("No segments available")))
-        return segment_list
+        self.fields['src_tenant'].choices = populate_tenant_choices(request)
+        self.fields['src_tenant'].widget.attrs['readonly'] = True
+        self.fields['src_segment'].choices = populate_segment_choices(request)
 
     src_ip = fields.IPField(
         label=_("Source IP Address"),
@@ -121,19 +201,33 @@ class CreateReachabilityTest(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
+            extract_src_tenant_and_segment(data)
             reachabilitytest = neutron.reachabilitytest_create(request, **data)
             msg = _("Reachability Test %s was successfully created") \
                 % data['name']
             LOG.debug(msg)
             messages.success(request, msg)
             return reachabilitytest
-        except Exception:
+        except Exception as e:
             exceptions.handle(request,
-                              _("Failed to create reachability test"))
+                              _("Failed to create reachability test. Info: "
+                                "%s") % e.message)
 
 
 class UpdateForm(CreateReachabilityTest):
     id = forms.CharField(max_length="36", widget=forms.HiddenInput())
+
+    def __init__(self, request, *args, **kwargs):
+        CreateReachabilityTest.__init__(self, request, *args, **kwargs)
+        # set src_segment initial
+        # if segment id/name is missing, this won't select the correct choice
+        # user needs to reselect the segment
+        if kwargs.get('initial') and kwargs.get('initial').get('src_segment'):
+            src_seg = kwargs.get('initial').get('src_segment')
+            for choice in self.fields['src_segment'].choices:
+                if src_seg in choice:
+                    self.initial['src_segment'] = str(choice[0])
+                    break
 
     def clean(self):
         cleaned_data = super(UpdateForm, self).clean()
@@ -151,6 +245,7 @@ class UpdateForm(CreateReachabilityTest):
 
     def handle(self, request, data):
         try:
+            extract_src_tenant_and_segment(data)
             id = data['id']
             reachabilitytest = neutron \
                 .reachabilitytest_update(request, id, **data)
@@ -159,41 +254,27 @@ class UpdateForm(CreateReachabilityTest):
             LOG.debug(msg)
             messages.success(request, msg)
             return reachabilitytest
-        except Exception:
+        except Exception as e:
             exceptions.handle(request,
-                              _("Failed to update reachability test"))
+                              _("Failed to update reachability test. Info: "
+                                "%s") % e.message)
 
 
 class RunQuickTestForm(forms.SelfHandlingForm):
 
-    src_tenant_name = forms.ChoiceField(
+    src_tenant = forms.ChoiceField(
         label=_("Source Tenant"),
-        help_text=_("Select a source tenant name."))
+        help_text=_("Test reachability for current tenant only."))
 
-    src_segment_name = forms.ChoiceField(
+    src_segment = forms.ChoiceField(
         label=_("Source Segment"),
-        help_text=_("Select a source segment name."))
+        help_text=_("Select a source segment."))
 
     def __init__(self, request, *args, **kwargs):
         super(RunQuickTestForm, self).__init__(request, *args, **kwargs)
-        self.fields['src_tenant_name'].choices = self\
-            .populate_tenant_choices(request)
-        self.fields['src_segment_name'].choices = self\
-            .populate_segment_choices(request)
-
-    def populate_tenant_choices(self, request):
-        return [(request.user.tenant_name, request.user.tenant_name)]
-
-    def populate_segment_choices(self, request):
-        networks = osneutron.network_list(request,
-                                          tenant_id=request.user.project_id,
-                                          shared=False)
-        segment_list = [(network.name, network.name) for network in networks]
-        if segment_list:
-            segment_list.insert(0, ("", _("Select a Segment")))
-        else:
-            segment_list.insert(0, ("", _("No segments available")))
-        return segment_list
+        self.fields['src_tenant'].choices = populate_tenant_choices(request)
+        self.fields['src_tenant'].widget.attrs['readonly'] = True
+        self.fields['src_segment'].choices = populate_segment_choices(request)
 
     src_ip = fields.IPField(
         label=_("Source IP Address"),
@@ -230,6 +311,7 @@ class RunQuickTestForm(forms.SelfHandlingForm):
     def handle(self, request, data):
         data['name'] = "quicktest_" + str(request.user.project_id)
         try:
+            extract_src_tenant_and_segment(data)
             reachabilityquicktest = neutron \
                 .reachabilityquicktest_get(request, request.user.project_id)
             # update with new fields
@@ -264,12 +346,14 @@ class SaveQuickTestForm(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         try:
+            extract_src_tenant_and_segment(data)
             data['save_test'] = True
             reachabilityquicktest = neutron.reachabilityquicktest_update(
                 request, request.user.project_id, **data)
             messages.success(
                 request, _('Successfully saved quicktest %s') % data['name'])
             return reachabilityquicktest
-        except Exception:
+        except Exception as e:
             messages.error(
-                request, _('Failed to save quicktest %s') % data['name'])
+                request, _('Failed to save quicktest %(name)s. Info: %(msg)s')
+                % {'name': data['name'], 'msg': e.message})

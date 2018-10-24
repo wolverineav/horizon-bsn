@@ -9,8 +9,8 @@
     <dt>{% trans "Name" %}</dt>
     <dd>{{ reachabilitytest.name|default:_("None") }}</dd>
     <dt>{% trans "Connection Source" %}</dt>
-    <dd>Source Tenant: {{ reachabilitytest.src_tenant_name|default:_("None") }}</dd>
-    <dd>Source Segment: {{ reachabilitytest.src_segment_name|default:_("None") }}</dd>
+    <dd>Source Tenant: {{ reachabilitytest.src_tenant|default:_("None") }}</dd>
+    <dd>Source Segment: {{ reachabilitytest.src_segment|default:_("None") }}</dd>
     <dd>Source IP: {{ reachabilitytest.src_ip|default:_("None") }}</dd>
     <dt>{% trans "Connection Destination" %}</dt>
     <dd>Destination IP: {{ reachabilitytest.dst_ip|default:_("None") }}</dd>
