@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Network Fabric" %}{% endblock %}
 
 {% block page_header %}
 <div class="page-header-container">
-  {% include "horizon/common/_page_header.html" with title=_("<img class='big-switch-logo' src='css/logo.png'/><span class='page-header-text'></span>") %}
+    {% include 'project/connections/_index_logo.html' %}
 </div>
 {% endblock page_header %}
 
 {% block main %}
-<link rel="stylesheet" href="css/panel-settings.css">
-<link rel="stylesheet" href="css/status-light.css">
-<link rel="stylesheet" href="css/opentip.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+<link rel="stylesheet" href="{% static "dashboard/project/connections/css/panel-settings.css" %}"/>
+<link rel="stylesheet" href="{% static "dashboard/project/connections/css/status-light.css" %}"/>
+<link rel="stylesheet" href="{% static "dashboard/project/connections/css/opentip.css" %}"/>
+
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
 <div class="row-fluid">
   <div class="col-sm-12">
   {{ tab_group.render }}
@@ -20,7 +21,8 @@
   </div>
 </div>
 
-<script src="js/opentip-jquery-excanvas.js"></script>
+<script src="{% static "dashboard/project/connections/lib/jquery.jsPlumb-1.5.5.js" %}"/>
+<script src="{% static "dashboard/project/connections/js/opentip-jquery-excanvas.js" %}"/>
 
 <script type='text/javascript'>
 $(function(){
