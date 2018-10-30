@@ -34,8 +34,10 @@ from horizon_bsn.content.connections.tenant_policies.tables \
 
 import json
 
+# heat dashboard is an optional import. available only when heat orchestrator
+# is installed and configured
 try:
-    from openstack_dashboard.api import heat
+    from heat_dashboard.api import heat
 except Exception as e:
     pass
 
