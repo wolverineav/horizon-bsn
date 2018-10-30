@@ -22,7 +22,7 @@ from horizon_bsn.api import neutron
 import logging
 
 try:
-    from openstack_dashboard.api import heat
+    from heat_dashboard.api import heat
 except Exception as e:
     pass
 
