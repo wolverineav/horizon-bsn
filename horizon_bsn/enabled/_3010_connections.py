@@ -32,7 +32,6 @@ ADD_PANEL = 'horizon_bsn.content.connections.panel.Connections'
 # Automatically discover static resources in installed apps
 AUTO_DISCOVER_STATIC_FILES = True
 
-# TODO test these before merge
 CONNECTIONS_STATIC_BASE = 'dashboard/project/connections'
 CSS_BASE = '%s/css' % CONNECTIONS_STATIC_BASE
 JS_BASE = '%s/js' % CONNECTIONS_STATIC_BASE
@@ -42,8 +41,6 @@ PREFIX_URL = '%s/' % STATIC_URL.strip('/')
 ADD_SCSS_FILES = [
     PREFIX_URL + '%s/demo.css' % CSS_BASE,
     PREFIX_URL + '%s/demo-all.css' % CSS_BASE,
-    # PREFIX_URL + '%s/firewall.jpeg' % CSS_BASE,
-    # PREFIX_URL + '%s/logo.png' % CSS_BASE,
     PREFIX_URL + '%s/network-template.css' % CSS_BASE,
     PREFIX_URL + '%s/opentip.css' % CSS_BASE,
     PREFIX_URL + '%s/panel-settings.css' % CSS_BASE,
