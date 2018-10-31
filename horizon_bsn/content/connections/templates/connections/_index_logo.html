@@ -1,0 +1,17 @@
+<!--derived from upstream horizon's _page_header.html-->
+<!--replaces title with big switch logo-->
+{% load i18n static %}
+{% block page_header %}
+  <div class='page-header'>
+    <h1>
+        <img class="big-switch-logo" src="{% static "dashboard/project/connections/css/logo.png" %}"/>
+        <span class='page-header-text'></span>
+    </h1>
+    {% if actions %}
+      <form class='actions_column pull-right' action='{{ url }}' method="POST">
+        {% csrf_token %}
+        {{ actions }}
+      </form>
+    {% endif %}
+  </div>
+{% endblock %}

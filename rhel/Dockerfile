@@ -7,8 +7,7 @@ LABEL name="rhosp13/openstack-horizon-bigswitch" \
       release="1" \
       summary="Red Hat OpenStack Platform 13.0 Horizon Big Switch Networks Plugin" \
       description="Red Hat OpenStack Platform 13.0 Horizon Big Switch Networks Plugin"
-# switch to root and install horizon-bsn from PYPI
-USER root
+
 RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
 RUN python /tmp/get-pip.py
 RUN pip install --upgrade "python-bsn-neutronclient"
@@ -18,5 +17,3 @@ RUN cp /usr/lib/python2.7/site-packages/horizon_bsn/enabled/* /usr/lib/python2.7
 # copy License
 RUN mkdir /licenses
 RUN curl -L -o /licenses/LICENSE https://raw.githubusercontent.com/bigswitch/horizon-bsn/master/LICENSE
-# switch the container back to the neutron user
-USER horizon
