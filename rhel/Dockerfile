@@ -11,6 +11,8 @@ LABEL name="rhosp13/openstack-horizon-bigswitch" \
 RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
 RUN python /tmp/get-pip.py
 RUN pip install --upgrade "python-bsn-neutronclient"
+# remove the 'ls -ltra' during actual build. this is simply to avoid using cached version of container
+RUN ls -ltra
 RUN pip install --upgrade "horizon-bsn>=12.0.0,<12.1.0"
 # copy enabled files
 RUN cp /usr/lib/python2.7/site-packages/horizon_bsn/enabled/* /usr/lib/python2.7/site-packages/openstack_dashboard/local/enabled/
