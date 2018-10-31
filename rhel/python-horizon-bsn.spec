@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        12.0.2
+Version:        12.0.3
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Wed Oct 31 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.3
+- OSP-220 OSP-221: update horizon for newer Django
 * Wed Sep 19 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.2
 - OSP-218: fix errors in queens release due to Django version update
 * Tue Aug 14 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.1
