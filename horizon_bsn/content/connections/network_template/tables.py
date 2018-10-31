@@ -21,7 +21,7 @@ from horizon import tables
 from horizon_bsn.api import neutron
 
 try:
-    from openstack_dashboard.api import heat
+    from heat_dashboard.api import heat
 except Exception as e:
     pass
 
