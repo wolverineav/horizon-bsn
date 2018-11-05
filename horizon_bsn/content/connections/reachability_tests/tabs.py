@@ -37,7 +37,7 @@ class QuickDetailsTab(tabs.Tab):
     name = _("Quick Test Results")
     slug = "quick_details"
     template_name = \
-        "project/connections/reachability_tests/_quick_detail_overview.htgiml"
+        "project/connections/reachability_tests/_quick_detail_overview.html"
 
     def get_context_data(self, request):
         reachabilityquicktest = self.tab_group.kwargs['reachabilityquicktest']
