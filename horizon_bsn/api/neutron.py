@@ -30,6 +30,7 @@ neutronclient = neutron.neutronclient
 @memoized
 def list_extensions(request):
     """List neutron extensions.
+
     :param request: django request object
     """
     neutron_api = neutronclient(request)
@@ -45,6 +46,7 @@ def list_extensions(request):
 
 def is_extension_supported(request, extension_alias):
     """Check if a specified extension is supported.
+
     :param request: django request object
     :param extension_alias: neutron extension alias
     """
@@ -178,8 +180,6 @@ def reachabilitytest_delete(request, reachabilitytest_id):
 
 def networktemplate_list(request, **params):
     LOG.debug("networktemplate_list(): params=%s", params)
-    if not is_extension_supported(request, 'bsn-service-extension'):
-
     networktemplates = neutronclient(request)\
         .list_networktemplates(**params)
     object_list = [NeutronAPIDictWrapper(obj)
