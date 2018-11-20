@@ -6,3 +6,5 @@
 # and doesn't work without Horizon so we depend on Horizon to
 # setup the requirements. If any packages are added that are
 # specific to horizon-bsn lib, put them here.
+
+six>=1.11 # MIT

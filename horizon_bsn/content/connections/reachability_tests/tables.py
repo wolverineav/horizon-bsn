@@ -35,16 +35,16 @@ class DeleteReachabilityTests(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete Reachability Test",
-            u"Delete Reachability Tests",
+            "Delete Reachability Test",
+            "Delete Reachability Tests",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted Reachability Test",
-            u"Deleted Reachability Tests",
+            "Deleted Reachability Test",
+            "Deleted Reachability Tests",
             count
         )
 
@@ -83,16 +83,16 @@ class RunTest(tables.BatchAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Run Reachability Test",
-            u"Run Reachability Tests",
+            "Run Reachability Test",
+            "Run Reachability Tests",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Running Reachability Test",
-            u"Running Reachability Tests",
+            "Running Reachability Test",
+            "Running Reachability Tests",
             count
         )
 

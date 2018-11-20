@@ -156,7 +156,7 @@ class ApplyTemplateForm(forms.SelfHandlingForm):
                 pass
             template = extract_fields_from_body(self.request, template_db.body)
             # Sorts the parameters in the template.
-            parameters = template['Parameters'].keys()
+            parameters = list(template['Parameters'].keys())
             parameters.sort()
             parameters.reverse()
             # Populates the form dynamically with information from the template

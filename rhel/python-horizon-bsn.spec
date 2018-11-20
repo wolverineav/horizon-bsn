@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Wed Nov 20 2018 Weifan Fu <weifan.fu@bigswitch.com> - 0.0.38
+- OSP-251: transition to python3
 * Wed Oct 31 2018 Aditya Vaja <wolverine.av@gmail.com> - 0.0.37
 - OSP-220 OSP-221: update horizon for newer Django
 * Wed Sep 19 2018 Aditya Vaja <wolverine.av@gmail.com> - 0.0.36
