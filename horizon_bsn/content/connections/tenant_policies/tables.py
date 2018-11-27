@@ -42,16 +42,16 @@ class RemoveTenantPolicy(tables.DeleteAction):
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Delete Tenant Policy",
-            u"Delete Tenant Policies",
+            "Delete Tenant Policy",
+            "Delete Tenant Policies",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Deleted Tenant Policy",
-            u"Deleted Tenant Policies",
+            "Deleted Tenant Policy",
+            "Deleted Tenant Policies",
             count
         )
 

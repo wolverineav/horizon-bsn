@@ -53,7 +53,7 @@ class PortField(forms.DecimalField):
 
     """
     def validate(self, value):
-        if int(value) not in range(0, 65536):
+        if int(value) not in list(range(0, 65536)):
             raise ValidationError(_("Port must be in the range of 0 to 65535"))
         super(PortField, self).validate(value)
 

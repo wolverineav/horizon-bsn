@@ -11,8 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import httplib
 import logging as log
+
+from six.moves import http_client
 
 session_map = {}
 HASH_HEADER = 'Floodlight-Verify-Path'
@@ -28,7 +29,7 @@ def request(url, prefix="/api/v1/data/controller/", method='GET',
     if hashPath:
         headers[HASH_HEADER] = hashPath
 
-    connection = httplib.HTTPSConnection(host)
+    connection = http_client.HTTPSConnection(host)
 
     try:
         connection.request(method, prefix + url, data, headers)
