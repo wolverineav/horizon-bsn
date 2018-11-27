@@ -17,3 +17,4 @@ if version2 > version1:
     print('Version update correct.')
 else:
     sys.exit("new version string is < old version string. Build FAILED")
+
