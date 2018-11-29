@@ -1,1 +1,11 @@
-./build/precheckin.sh
+git clean -fxd
+GIT_REPO=`pwd`
+
+DOCKER_IMAGE=$DOCKER_REGISTRY'/bosi-builder-py3:latest'
+docker pull $DOCKER_IMAGE
+
+docker run \
+    -e GIT_COMMIT=$GIT_COMMIT \
+    -v $GIT_REPO:/horizon-bsn \
+    $DOCKER_IMAGE \
+    /horizon-bsn/build/precheckin.sh
