@@ -1,4 +1,4 @@
-git clean -fxd
+sudo git clean -fxd
 GIT_REPO=`pwd`
 
 # get gpg creds in place
