@@ -1,4 +1,4 @@
-git clean -fxd
+sudo git clean -fxd
 GIT_REPO=`pwd`
 
 DOCKER_IMAGE=$DOCKER_REGISTRY'/bosi-builder-py3:latest'
