@@ -9,11 +9,11 @@
 {% endblock page_header %}
 
 {% block main %}
-<link rel="stylesheet" href="{% static "dashboard/project/connections/css/panel-settings.css" %}"/>
-<link rel="stylesheet" href="{% static "dashboard/project/connections/css/status-light.css" %}"/>
-<link rel="stylesheet" href="{% static "dashboard/project/connections/css/opentip.css" %}"/>
+<!--<link rel="stylesheet" href="{% static "dashboard/project/connections/css/panel-settings.css" %}"/>-->
+<!--<link rel="stylesheet" href="{% static "dashboard/project/connections/css/status-light.css" %}"/>-->
+<!--<link rel="stylesheet" href="{% static "dashboard/project/connections/css/opentip.css" %}"/>-->
 
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
+<!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>-->
 <div class="row-fluid">
   <div class="col-sm-12">
   {{ tab_group.render }}
@@ -21,172 +21,172 @@
   </div>
 </div>
 
-<script src="{% static "dashboard/project/connections/lib/jquery.jsPlumb-1.5.5.js" %}"/>
-<script src="{% static "dashboard/project/connections/js/opentip-jquery-excanvas.js" %}"/>
+<!--<script src="{% static "dashboard/project/connections/lib/jquery.jsPlumb-1.5.5.js" %}"/>-->
+<!--<script src="{% static "dashboard/project/connections/js/opentip-jquery-excanvas.js" %}"/>-->
 
-<script type='text/javascript'>
-$(function(){
-	//added Font Awesome icons to the buttons.
-	$("#reachability_tests__action_quick_test").html("<i class='fa fa-bolt fa-lg'></i>  Quick Test");
-	$("#apply_network_template_button").html("<i class='fa fa-plus fa-lg'></i>      <b>Apply Network Template</b>");
-	$("#remove_network_instance_button").html("<i class='fa fa-trash-o fa-lg'></i>      <b>Remove Network Instance</b>");
-	
-	var count = 0;
+<!--<script type='text/javascript'>-->
+<!--$(function(){-->
+	<!--//added Font Awesome icons to the buttons.-->
+	<!--$("#reachability_tests__action_quick_test").html("<i class='fa fa-bolt fa-lg'></i>  Quick Test");-->
+	<!--$("#apply_network_template_button").html("<i class='fa fa-plus fa-lg'></i>      <b>Apply Network Template</b>");-->
+	<!--$("#remove_network_instance_button").html("<i class='fa fa-trash-o fa-lg'></i>      <b>Remove Network Instance</b>");-->
+	<!---->
+	<!--var count = 0;-->
 
-	//Add classes to the table elements to use to generate the status lights.
-     	$('#reachability_tests tr').each(function(){
-    		$(this).find('td').each(function(){
-			if(count == 3 && (this.textContent === "PASS" || this.textContent === "FAIL" || this.textContent === "PENDING")){
-				$(this).addClass("status-light");
-				if(this.textContent === "PASS"){
-					$(this).addClass("test-pass");
-					$(this).empty();
-				}
-				else if(this.textContent === "PENDING"){
-					$(this).addClass("test-pending");
-					$(this).empty();
-				}
-				else if(this.textContent === "FAIL"){
-                                        $(this).addClass("test-fail");
-					$(this).empty();
-                                }
-			}
-			count++;
-        		//do your stuff, you can use $(this) to get current cell
-    		})
-		count = 0;
-	})
-	
-	//Added html containers to hold the Font Awesome icons.
-	$( ".test-pass" ).wrapInner( "<div class='test-general-settings'><div class='test-text'>PASS</div><i class='status-light test-pass-msg fa fa-check fa-3x'></i></div>");
-    $( ".test-pending" ).wrapInner( "<div class='test-general-settings'><div class='test-text'>PENDING</div><i class='status-light test-pending-msg fa fa-question fa-3x'></i></div>");
-	$( ".test-fail" ).wrapInner( "<div class='test-general-settings'><div class='test-text'>FAIL</div><i class='status-light test-fail-msg fa fa-times fa-3x'></i></div>");
+	<!--//Add classes to the table elements to use to generate the status lights.-->
+     	<!--$('#reachability_tests tr').each(function(){-->
+    		<!--$(this).find('td').each(function(){-->
+			<!--if(count == 3 && (this.textContent === "PASS" || this.textContent === "FAIL" || this.textContent === "PENDING")){-->
+				<!--$(this).addClass("status-light");-->
+				<!--if(this.textContent === "PASS"){-->
+					<!--$(this).addClass("test-pass");-->
+					<!--$(this).empty();-->
+				<!--}-->
+				<!--else if(this.textContent === "PENDING"){-->
+					<!--$(this).addClass("test-pending");-->
+					<!--$(this).empty();-->
+				<!--}-->
+				<!--else if(this.textContent === "FAIL"){-->
+                                        <!--$(this).addClass("test-fail");-->
+					<!--$(this).empty();-->
+                                <!--}-->
+			<!--}-->
+			<!--count++;-->
+        		<!--//do your stuff, you can use $(this) to get current cell-->
+    		<!--})-->
+		<!--count = 0;-->
+	<!--})-->
+	<!---->
+	<!--//Added html containers to hold the Font Awesome icons.-->
+	<!--$( ".test-pass" ).wrapInner( "<div class='test-general-settings'><div class='test-text'>PASS</div><i class='status-light test-pass-msg fa fa-check fa-3x'></i></div>");-->
+    <!--$( ".test-pending" ).wrapInner( "<div class='test-general-settings'><div class='test-text'>PENDING</div><i class='status-light test-pending-msg fa fa-question fa-3x'></i></div>");-->
+	<!--$( ".test-fail" ).wrapInner( "<div class='test-general-settings'><div class='test-text'>FAIL</div><i class='status-light test-fail-msg fa fa-times fa-3x'></i></div>");-->
 
-	//Create a Open Tip object for the icons and bind their apperance
-	//to hover over event.
-     	initializeToolTips('.test-pass-msg','pass');
-        initializeToolTips('.test-pending-msg','pending');
-        initializeToolTips('.test-fail-msg','fail');
-	hoverOverMenu('.test-pass-msg');
-     	hoverOverMenu('.test-pending-msg');
-     	hoverOverMenu('.test-fail-msg');
+	<!--//Create a Open Tip object for the icons and bind their apperance-->
+	<!--//to hover over event.-->
+     	<!--initializeToolTips('.test-pass-msg','pass');-->
+        <!--initializeToolTips('.test-pending-msg','pending');-->
+        <!--initializeToolTips('.test-fail-msg','fail');-->
+	<!--hoverOverMenu('.test-pass-msg');-->
+     	<!--hoverOverMenu('.test-pending-msg');-->
+     	<!--hoverOverMenu('.test-fail-msg');-->
 
-	//Manange status list.
-	manageStatusLists();
-});
+	<!--//Manange status list.-->
+	<!--manageStatusLists();-->
+<!--});-->
 
-/**
-*  Function handles the hiding of Open tip objects if the user goes outside the 
-*  table or to a different page.
-**/
-function manageStatusLists(){
-	$(document).mousemove(function(event) {
-        	var x = event.clientX, y = event.clientY,
-        	elementMouseIsOver = document.elementFromPoint(x, y);
-        	if($(elementMouseIsOver).parents("#reachability_tests").length == 0 && $(elementMouseIsOver).hasClass('opentip') == false && $(elementMouseIsOver).parents(".opentip").length == 0){
-        		for(var i = 0; i < Opentip.tips.length; i ++) { Opentip.tips[i].hide(); }
-        	}
-        });
+<!--/**-->
+<!--*  Function handles the hiding of Open tip objects if the user goes outside the -->
+<!--*  table or to a different page.-->
+<!--**/-->
+<!--function manageStatusLists(){-->
+	<!--$(document).mousemove(function(event) {-->
+        	<!--var x = event.clientX, y = event.clientY,-->
+        	<!--elementMouseIsOver = document.elementFromPoint(x, y);-->
+        	<!--if($(elementMouseIsOver).parents("#reachability_tests").length == 0 && $(elementMouseIsOver).hasClass('opentip') == false && $(elementMouseIsOver).parents(".opentip").length == 0){-->
+        		<!--for(var i = 0; i < Opentip.tips.length; i ++) { Opentip.tips[i].hide(); }-->
+        	<!--}-->
+        <!--});-->
 
-}
+<!--}-->
 
-/**
-*  Initialize an Open Tip objects for every item in the list passed on to 
-*  tipMenuItems.
-**/
-function initializeToolTips(tipMenuItems, initialContent){
-	Opentip.styles.runListStyle = {
-	  // Make it look like the alert style. If you omit this, it will default to "standard"
-                extends: "dark",
-                // Tells the tooltip to be fixed and be attached to the trigger, which is the default target
-                target: true,
-                stem: true,
-		showOn: null,
-		hideTrigger: "closeButton",
-		group: "runLists"
-        };
+<!--/**-->
+<!--*  Initialize an Open Tip objects for every item in the list passed on to -->
+<!--*  tipMenuItems.-->
+<!--**/-->
+<!--function initializeToolTips(tipMenuItems, initialContent){-->
+	<!--Opentip.styles.runListStyle = {-->
+	  <!--// Make it look like the alert style. If you omit this, it will default to "standard"-->
+                <!--extends: "dark",-->
+                <!--// Tells the tooltip to be fixed and be attached to the trigger, which is the default target-->
+                <!--target: true,-->
+                <!--stem: true,-->
+		<!--showOn: null,-->
+		<!--hideTrigger: "closeButton",-->
+		<!--group: "runLists"-->
+        <!--};-->
 
-	if($(tipMenuItems).length > 0){
-                $(tipMenuItems).each(function(){
-                        $(this).opentip(initialContent, { style: 'runListStyle' });
-                })
-        }
-}
+	<!--if($(tipMenuItems).length > 0){-->
+                <!--$(tipMenuItems).each(function(){-->
+                        <!--$(this).opentip(initialContent, { style: 'runListStyle' });-->
+                <!--})-->
+        <!--}-->
+<!--}-->
 
-/**
-*  Add the contnet of the list of runs to the Open Tip objet that is hover over and 
-*  display it.
-**/
-function hoverOverMenu(hoverMenu){
-	$(hoverMenu).hover(function(){
-		var current = this;
-		populateMenu(current);
-		  
-		if($(hoverMenu).length > 0){
-			$(hoverMenu).each(function(){
-				if($("#info").text().split("-").length > 2){
-					$(this).data("opentips")[0].setContent($("#info").html());
-				}else{
-					$(this).data("opentips")[0].setContent("No data available.");
-				}
-				
-		})
-		}
-		$(this).data("opentips")[0].show();
-		
-     	},function(){
-		$('#info').empty();
-     	});
+<!--/**-->
+<!--*  Add the contnet of the list of runs to the Open Tip objet that is hover over and -->
+<!--*  display it.-->
+<!--**/-->
+<!--function hoverOverMenu(hoverMenu){-->
+	<!--$(hoverMenu).hover(function(){-->
+		<!--var current = this;-->
+		<!--populateMenu(current);-->
+		  <!---->
+		<!--if($(hoverMenu).length > 0){-->
+			<!--$(hoverMenu).each(function(){-->
+				<!--if($("#info").text().split("-").length > 2){-->
+					<!--$(this).data("opentips")[0].setContent($("#info").html());-->
+				<!--}else{-->
+					<!--$(this).data("opentips")[0].setContent("No data available.");-->
+				<!--}-->
+				<!---->
+		<!--})-->
+		<!--}-->
+		<!--$(this).data("opentips")[0].show();-->
+		<!---->
+     	<!--},function(){-->
+		<!--$('#info').empty();-->
+     	<!--});-->
 
-}
+<!--}-->
 
-/**
-* Populate the menu to be added to the Open Tip object based on the row 
-* and column. The data is acquired from the tables' hidden column.
-**/
-function populateMenu(dataObject){
-	var rowElement = $(dataObject).closest("tr");
-	var rawData = $(rowElement.children()[4]).html();
-	var cleanData = rawData.replace(/[^\w\s,:-]/gi, '').split(",");
-	var testName = $($(rowElement).children()[1]).text();
-	var statusMsg = '';
-	// Make the list itself which is a <ul>
-        var listElement = document.createElement("ul");
+<!--/**-->
+<!--* Populate the menu to be added to the Open Tip object based on the row -->
+<!--* and column. The data is acquired from the tables' hidden column.-->
+<!--**/-->
+<!--function populateMenu(dataObject){-->
+	<!--var rowElement = $(dataObject).closest("tr");-->
+	<!--var rawData = $(rowElement.children()[4]).html();-->
+	<!--var cleanData = rawData.replace(/[^\w\s,:-]/gi, '').split(",");-->
+	<!--var testName = $($(rowElement).children()[1]).text();-->
+	<!--var statusMsg = '';-->
+	<!--// Make the list itself which is a <ul>-->
+        <!--var listElement = document.createElement("ul");-->
 
-	// add it to the page
-        $('#info').append(listElement);
+	<!--// add it to the page-->
+        <!--$('#info').append(listElement);-->
 
-        var numberOfListItems = cleanData.length;
+        <!--var numberOfListItems = cleanData.length;-->
 
-        for( var i =  0 ; i < numberOfListItems ; ++i){
-		statusMsg = listItemStatus(dataObject);
-        var BASEURL = "{% url 'horizon:project:connections:index' %}";
-		$(listElement).append("<div class=status-list-msg>" + statusMsg + "<a href='"+BASEURL+"reachability_tests/"+testName+"/'>" + cleanData[i] + "</a></div>");
-        }
-	
-}
+        <!--for( var i =  0 ; i < numberOfListItems ; ++i){-->
+		<!--statusMsg = listItemStatus(dataObject);-->
+        <!--var BASEURL = "{% url 'horizon:project:connections:index' %}";-->
+		<!--$(listElement).append("<div class=status-list-msg>" + statusMsg + "<a href='"+BASEURL+"reachability_tests/"+testName+"/'>" + cleanData[i] + "</a></div>");-->
+        <!--}-->
+	<!---->
+<!--}-->
 
-/**
-* Add message to the Open Tip list to go in fron of the time stamp. 
-**/
-function listItemStatus(statusListItem){
-	var statusMsg = '';
-	var randNum = 0;
-	if($(statusListItem).hasClass('test-pass-msg')){
-	        statusMsg = " Succeeded at ";
-        }else if($(statusListItem).hasClass('test-fail-msg')){
-		statusMsg = " Failed at ";
-	}else if($(statusListItem).hasClass('test-pending-msg')){
-		randNum = Math.floor((Math.random()*2)+0); 
-		if(randNum == 0){
-			statusMsg = " Succeeded at ";
-		}else{
-			statusMsg = " Failed at ";
-		}
-	}
-	return statusMsg;
-}
-</script>
+<!--/**-->
+<!--* Add message to the Open Tip list to go in fron of the time stamp. -->
+<!--**/-->
+<!--function listItemStatus(statusListItem){-->
+	<!--var statusMsg = '';-->
+	<!--var randNum = 0;-->
+	<!--if($(statusListItem).hasClass('test-pass-msg')){-->
+	        <!--statusMsg = " Succeeded at ";-->
+        <!--}else if($(statusListItem).hasClass('test-fail-msg')){-->
+		<!--statusMsg = " Failed at ";-->
+	<!--}else if($(statusListItem).hasClass('test-pending-msg')){-->
+		<!--randNum = Math.floor((Math.random()*2)+0); -->
+		<!--if(randNum == 0){-->
+			<!--statusMsg = " Succeeded at ";-->
+		<!--}else{-->
+			<!--statusMsg = " Failed at ";-->
+		<!--}-->
+	<!--}-->
+	<!--return statusMsg;-->
+<!--}-->
+<!--</script>-->
 
 {% endblock %}
 
