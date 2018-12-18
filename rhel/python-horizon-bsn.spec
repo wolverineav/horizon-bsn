@@ -5,7 +5,7 @@
 %global lib_dir %{buildroot}%{python2_sitelib}/%{pypi_name}/plugins/bigswitch
 
 Name:           python-%{rpm_name}
-Version:        12.0.4
+Version:        12.0.5
 Release:        1%{?dist}
 Summary:        Big Switch Networks horizon plugin for OpenStack
 License:        ASL 2.0
@@ -72,6 +72,8 @@ done
 %postun
 
 %changelog
+* Tue Dec 18 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.5
+- OSP-265 OSP-222 serve static files correctly and unicode support
 * Thu Nov 29 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.4
 - OSP-191: display a nice to read error when neutron is not configured properly
 * Wed Oct 31 2018 Aditya Vaja <wolverine.av@gmail.com> - 12.0.3
