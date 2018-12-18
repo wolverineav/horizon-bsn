@@ -34,25 +34,9 @@ AUTO_DISCOVER_STATIC_FILES = True
 
 CONNECTIONS_STATIC_BASE = 'dashboard/project/connections'
 CSS_BASE = '%s/css' % CONNECTIONS_STATIC_BASE
-JS_BASE = '%s/js' % CONNECTIONS_STATIC_BASE
-LIB_BASE = '%s/lib' % CONNECTIONS_STATIC_BASE
-
 PREFIX_URL = '%s/' % STATIC_URL.strip('/')
+
 ADD_SCSS_FILES = [
-    PREFIX_URL + '%s/demo.css' % CSS_BASE,
-    PREFIX_URL + '%s/demo-all.css' % CSS_BASE,
     PREFIX_URL + '%s/network-template.css' % CSS_BASE,
     PREFIX_URL + '%s/opentip.css' % CSS_BASE,
-    PREFIX_URL + '%s/panel-settings.css' % CSS_BASE,
-    PREFIX_URL + '%s/status-light.css' % CSS_BASE]
-
-ADD_JS_FILES = [
-    '%s/demo.js' % JS_BASE,
-    '%s/opentip-jquery-excanvas.js' % JS_BASE,
-]
-
-ADD_JS_FILES.extend([
-    '%s/jquery.jsPlumb-1.5.5.js' % LIB_BASE,
-    '%s/jquery.jsPlumb-1.5.5-min.js' % LIB_BASE,
-    '%s/jquery.ui.touch-punch.min.js' % LIB_BASE,
-])
+    PREFIX_URL + '%s/panel-settings.css' % CSS_BASE]
